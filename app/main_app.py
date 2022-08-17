@@ -5,7 +5,6 @@ LOG = get_logger()
 
 def main():
     LOG.info("Running Main App")
-
     # Create PubNub Manager
     pnmg = pubnub_manager.PubNubManager()
 
