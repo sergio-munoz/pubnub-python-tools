@@ -15,7 +15,7 @@ def main():
     if override_args.message:
         MESSAGE = override_args.message
     if override_args.subscribe:
-        pnmg.subscribe(override_args.subscribe)  # subscribe channel name comes from cli
+        pnmg.subscribe(override_args.subscribe, presence=override_args.presence)  # subscribe channel name comes from cli
         LOG.info("Subscribed")
     if override_args.publish:
         if not MESSAGE:
@@ -23,6 +23,9 @@ def main():
             return
         pnmg.publish_message(override_args.publish, MESSAGE) # message commes appart 
         LOG.info("Published")
+    if override_args.unsubscribe:
+        pnmg.unsubscribe(override_args.unsubscribe)  # subscribe channel name comes from cli
+        LOG.info("Unsubscribed")
 
 
 # Simple function to be tested with pytest

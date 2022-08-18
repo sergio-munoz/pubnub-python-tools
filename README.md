@@ -47,9 +47,11 @@ $ vim .env
 
 To run with via CLI you are going to need your credentials according to whatever operation you want to do. 
 
+Always set the UUID to uniquely identify the user or device that connects to PubNub. This UUID should be persisted, and should remain unchanged for the lifetime of the user or the device. Not setting the UUID can significantly impact your billing.
+
 > Remember to always set up your `UUID` with `-u`.
 
-> For help use:
+For help use:
 
 ```
 python3 pn_run.py --help
@@ -59,8 +61,8 @@ python3 pn_run.py --help
 
 Subscribe to a channel forever. 
 
-* `-sk`, `--subscribe-key`
-* `-s`, `--subscribe`
+* `-sk`, `--subscribe-key` - PubNub subscribe key
+* `-s`, `--subscribe` - PubNub subscribe channel name
 
 ```
 python3 run_app.py -sk SubscribeKey -s ChannelName
@@ -68,9 +70,11 @@ python3 run_app.py -sk SubscribeKey -s ChannelName
 
 ### Publish
 
-* `-pk`, `--publish-key`
-* `-p`, `--publish`
-* `-m`, `--message`
+Publish a message to a channel.
+
+* `-pk`, `--publish-key` - PubNub publish key
+* `-p`, `--publish` - PubNub publish channel name
+* `-m`, `--message` - Message to publish
 
 ```
 python3 run_app.py -pk PublishKey -p ChannelName -m "Hello world!"
@@ -78,7 +82,7 @@ python3 run_app.py -pk PublishKey -p ChannelName -m "Hello world!"
 
 ### Subscribe and Publish
 
-> Because subscribe and publish happen so fast the subscribe might not be listening when the publish was made and thus it will not be shown, but it will be published, if other devices are listening, they will reflect the changes. This is classic pub/sub behavior.
+Because subscribe and publish happen so fast the subscribe might not be listening when the publish was made and thus it will not be shown, but it will be published, if other devices are listening, they will reflect the changes. This is classic pub/sub behavior.
 
 ```
 python3 run_app.py -sk SubscribeKey -s ChannelName -pk PublishKey -p ChannelName -m "Hello world!" -u UUID
@@ -87,6 +91,29 @@ python3 run_app.py -sk SubscribeKey -s ChannelName -pk PublishKey -p ChannelName
 Open another terminal and run that command again to show that the user is still subscribed the channel.
 
 Dig into the `logger/main_log.log` to see more information.
+
+### Presence
+
+Subscribe to a channel with Presence forever. 
+
+* `-sk`, `--subscribe-key` - PubNub subscribe key
+* `-s`, `--subscribe` - PubNub subscribe channel name
+* `-pres`, `--presence` - Presence flag
+
+```
+python3 run_app.py -sk SubscribeKey -s ChannelName -pres
+```
+
+### Unsubscribe
+
+Send a leave event to a channel subscribed with Presence. 
+
+* `-sk`, `--subscribe-key` - PubNub subscribe key
+* `-us`, `--unsubscribe` - PubNub channel name to unsubscribe from
+
+```
+python3 run_app.py -sk SubscribeKey -us ChannelName
+```
 
 ## Settings
 

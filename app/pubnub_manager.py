@@ -43,3 +43,15 @@ class PubNubManager():
     def publish_message(self, channel, message):
         self.pn.publish().channel(channel).message(message).pn_async(my_publish_callback)
         # LOG messages are called in the `my_publish_callback`
+    
+    def unsubscribe(self, channels, channel_groups=None):
+        """channels: String|List|Tuple
+           channel_groups: String|List|Tuple
+        """
+        function_builder = self.pn.unsubscribe()
+        if channels:
+            function_builder = function_builder.channels(channels)
+        if channel_groups:
+            function_builder = function_builder.channel_groups(channel_groups)
+        function_builder.execute()
+        LOG.info("Unsubscribed from channels: {}".format(channels))
