@@ -20,7 +20,7 @@ chomod +x ./scripts/install.sh
 You can run python commands to PubNub:
 
 ```
-python3 pn_run.py -s Space01 -p Space01 "Hello world!"
+python3 run_pn.py -s Space01 -p Space01 "Hello world!"
 ```
 
 ## Manual Setup
@@ -31,7 +31,7 @@ Setup a new python environment and install packages in `requirements.txt`:
 $ python3 -m venv Venv
 $ source /Venv/bin/activate
 $ (python) pip install -r requirements.txt
-$ (python) pn_run.py --help
+$ (python) run_pn.py --help
 ```
 
 ## Configure PubNub
@@ -54,7 +54,7 @@ Always set the UUID to uniquely identify the user or device that connects to Pub
 For help use:
 
 ```
-python3 pn_run.py --help
+python3 run_pn.py --help
 ```
 
 ### Subscribe
@@ -65,7 +65,7 @@ Subscribe to a channel forever.
 * `-s`, `--subscribe` - PubNub subscribe channel name
 
 ```
-python3 run_app.py -sk SubscribeKey -s ChannelName
+python3 run_pn.py -sk SubscribeKey -s ChannelName
 ```
 
 ### Publish
@@ -77,7 +77,7 @@ Publish a message to a channel.
 * `-m`, `--message` - Message to publish
 
 ```
-python3 run_app.py -pk PublishKey -p ChannelName -m "Hello world!"
+python3 run_pn.py -pk PublishKey -p ChannelName -m "Hello world!"
 ```
 
 ### Subscribe and Publish
@@ -85,7 +85,7 @@ python3 run_app.py -pk PublishKey -p ChannelName -m "Hello world!"
 Because subscribe and publish happen so fast the subscribe might not be listening when the publish was made and thus it will not be shown, but it will be published, if other devices are listening, they will reflect the changes. This is classic pub/sub behavior.
 
 ```
-python3 run_app.py -sk SubscribeKey -s ChannelName -pk PublishKey -p ChannelName -m "Hello world!" -u UUID
+python3 run_pn.py -sk SubscribeKey -s ChannelName -pk PublishKey -p ChannelName -m "Hello world!" -u UUID
 ```
 
 Open another terminal and run that command again to show that the user is still subscribed the channel.
@@ -101,7 +101,7 @@ Subscribe to a channel with Presence forever.
 * `-pres`, `--presence` - Presence flag
 
 ```
-python3 run_app.py -sk SubscribeKey -s ChannelName -pres
+python3 run_pn.py -sk SubscribeKey -s ChannelName -pres
 ```
 
 ### Unsubscribe
@@ -112,13 +112,22 @@ Send a leave event to a channel subscribed with Presence.
 * `-us`, `--unsubscribe` - PubNub channel name to unsubscribe from
 
 ```
-python3 run_app.py -sk SubscribeKey -us ChannelName
+python3 run_pn.py -sk SubscribeKey -us ChannelName
+```
+
+### HereNow
+
+Call `Here Now` on a channel. 
+
+* `-here`, `--here-how` - Here now on a channel name
+
+```
+python3 run_pn.py -here ChannelName
 ```
 
 ## Settings
 
 You can set up `SubscribeKey`, `PublishKey`, and `UserId` from the environmental variables file `.env`. If you use the CLI you're technically overriding them using arguments, which should have preference. You can see how things work in the file `module_config.py`. 
-
 
 ## Testing
 

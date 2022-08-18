@@ -24,8 +24,11 @@ def main():
         pnmg.publish_message(override_args.publish, MESSAGE) # message commes appart 
         LOG.info("Published")
     if override_args.unsubscribe:
-        pnmg.unsubscribe(override_args.unsubscribe)  # subscribe channel name comes from cli
+        pnmg.unsubscribe(override_args.unsubscribe)  # unsubscribe channel name comes from cli
         LOG.info("Unsubscribed")
+    if override_args.here_now:
+        pnmg.here_now(override_args.here_now)  # here_now channel name comes from cli
+        LOG.info("Called here_now")
 
 
 # Simple function to be tested with pytest

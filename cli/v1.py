@@ -10,5 +10,6 @@ def create_cli_v1():
     parser.add_argument("-p", "--publish", type=str, help="Publish a message to a Channel")
     parser.add_argument("-m", "--message", type=str, help="Message to publish")
     parser.add_argument("-us", "--unsubscribe", type=str, help="Unsubscribe from a Channel")
+    parser.add_argument("-here", "--here-now", type=str, help="Unsubscribe from a Channel")
     args = parser.parse_args()
     return args
