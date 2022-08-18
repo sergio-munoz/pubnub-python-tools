@@ -10,12 +10,18 @@ For MacOS use `homebrew` to install packages or the following [PubNub Ansible Ro
 
 ## TLDR;
 
-Run the following script:
+Run the install script:
 
 ```
-chomod +x scripts/run.sh && ./scripts/run.sh
+chomod +x ./scripts/install.sh
+./scripts/install.sh SubscribeKey PublishKey UUID
 ```
 
+You can run python commands to PubNub:
+
+```
+python3 pn_run.py -s Space01 -p Space01 "Hello world!"
+```
 
 ## Manual Setup
 
@@ -25,6 +31,7 @@ Setup a new python environment and install packages in `requirements.txt`:
 $ python3 -m venv Venv
 $ source /Venv/bin/activate
 $ (python) pip install -r requirements.txt
+$ (python) pn_run.py --help
 ```
 
 ## Configure PubNub
@@ -36,22 +43,55 @@ $ cp env .env
 $ vim .env
 ```
 
-## Run App
+## CLI
 
-Running this app will configure pubnub, create listeners and callbacks, subscribe to a channel and publish a message.
+To run with via CLI you are going to need your credentials according to whatever operation you want to do. 
+
+> Remember to always set up your `UUID` with `-u`.
+
+> For help use:
 
 ```
-python3 run_app.py
+python3 pn_run.py --help
+```
+
+### Subscribe
+
+Subscribe to a channel forever. 
+
+* `-sk`, `--subscribe-key`
+* `-s`, `--subscribe`
+
+```
+python3 run_app.py -sk SubscribeKey -s ChannelName
+```
+
+### Publish
+
+* `-pk`, `--publish-key`
+* `-p`, `--publish`
+* `-m`, `--message`
+
+```
+python3 run_app.py -pk PublishKey -p ChannelName -m "Hello world!"
+```
+
+### Subscribe and Publish
+
+> Because subscribe and publish happen so fast the subscribe might not be listening when the publish was made and thus it will not be shown, but it will be published, if other devices are listening, they will reflect the changes. This is classic pub/sub behavior.
+
+```
+python3 run_app.py -sk SubscribeKey -s ChannelName -pk PublishKey -p ChannelName -m "Hello world!" -u UUID
 ```
 
 Open another terminal and run that command again to show that the user is still subscribed the channel.
 
 Dig into the `logger/main_log.log` to see more information.
 
-
 ## Settings
 
-`SubscribeKey`, `PublishKey`, and `UserId` are read from `.env` variable but you can override them in `module_config.py`.
+You can set up `SubscribeKey`, `PublishKey`, and `UserId` from the environmental variables file `.env`. If you use the CLI you're technically overriding them using arguments, which should have preference. You can see how things work in the file `module_config.py`. 
+
 
 ## Testing
 

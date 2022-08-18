@@ -1,5 +1,6 @@
 from logger.logging_config import get_logger
 from app import pubnub_manager
+from cli.v1 import create_cli_v1
 
 LOG = get_logger()
 
@@ -8,14 +9,21 @@ def main():
     # Create PubNub Manager
     pnmg = pubnub_manager.PubNubManager()
 
-    # Subscribe to a Channel
-    pnmg.subscribe("Space01")
+    # Get CLI arguments
+    override_args = create_cli_v1()
 
-    # Publish Message to a Channel
-    pnmg.publish_message("Space01", "Hello World!")
+    if override_args.message:
+        MESSAGE = override_args.message
+    if override_args.subscribe:
+        pnmg.subscribe(override_args.subscribe)  # subscribe channel name comes from cli
+        LOG.info("Subscribed")
+    if override_args.publish:
+        if not MESSAGE:
+            LOG.error("Can't publish empty message")
+            return
+        pnmg.publish_message(override_args.publish, MESSAGE) # message commes appart 
+        LOG.info("Published")
 
-    LOG.info("Done running Main App")
-    LOG.info("Still subscribed")
 
 # Simple function to be tested with pytest
 def simple_function(real_number):
