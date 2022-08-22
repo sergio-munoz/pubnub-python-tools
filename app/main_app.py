@@ -5,30 +5,24 @@ from cli.v1 import create_cli_v1
 LOG = get_logger()
 
 def main():
-    LOG.info("Running Main App")
     # Create PubNub Manager
     pnmg = pubnub_manager.PubNubManager()
 
     # Get CLI arguments
-    override_args = create_cli_v1()
-
-    if override_args.message:
-        MESSAGE = override_args.message
-    if override_args.subscribe:
-        pnmg.subscribe(override_args.subscribe, presence=override_args.presence)  # subscribe channel name comes from cli
-        LOG.info("Subscribed")
-    if override_args.publish:
-        if not MESSAGE:
+    args = create_cli_v1()
+    if args.device_manager:
+        pnmg.add_device_manager(args.device_manager)
+    if args.subscribe:
+        pnmg.subscribe(args.subscribe, presence=args.presence)
+    if args.publish:
+        if not args.message:
             LOG.error("Can't publish empty message")
             return
-        pnmg.publish_message(override_args.publish, MESSAGE) # message commes appart 
-        LOG.info("Published")
-    if override_args.unsubscribe:
-        pnmg.unsubscribe(override_args.unsubscribe)  # unsubscribe channel name comes from cli
-        LOG.info("Unsubscribed")
-    if override_args.here_now:
-        pnmg.here_now(override_args.here_now)  # here_now channel name comes from cli
-        LOG.info("Called here_now")
+        pnmg.publish_message(args.publish, args.message)
+    if args.here_now:
+        pnmg.here_now(args.here_now)
+    if args.unsubscribe:
+        pnmg.unsubscribe(args.unsubscribe)
 
 
 # Simple function to be tested with pytest

@@ -5,7 +5,7 @@ from logger.logging_config import set_logger
 from unittest import TestCase
 
 # Create a logger if needed for testing cases
-LOG_TEST = set_logger("test_main_app.py_log", DEBUG)  # Defaults as INFO
+LOG_TEST = set_logger("test_main_app", DEBUG)  # Defaults as INFO
 
 class RunMainAppTests(TestCase):
 

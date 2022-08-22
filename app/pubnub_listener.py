@@ -2,10 +2,18 @@
 from logger.logging_config import get_logger
 from pubnub.callbacks import SubscribeCallback
 from pubnub.enums import PNOperationType, PNStatusCategory
+import requests
+import traceback
+
 
 LOG = get_logger()
 
 class MySubscribeCallback(SubscribeCallback):
+   
+    def __init__(self , device_manager=None):
+        # Add device_manager capabilities
+        self.device_manager = device_manager
+
     def message(self, pubnub, message):
         print("Message channel: %s" % message.channel)
         LOG.debug("Message channel: %s" % message.channel)
@@ -70,6 +78,14 @@ class MySubscribeCallback(SubscribeCallback):
                 or status.operation == PNOperationType.PNUnsubscribeOperation:
             if status.category == PNStatusCategory.PNConnectedCategory:
                 LOG.debug("This is expected for a subscribe, this means there is no error or issue whatsoever")
+                # confirm channelId u.e555.u123 is in e.affectedChannels
+                # if !connected then use the fetch API to GET request URL
+                # set connected = true
+                # https://ps.pndsn.com/v1/blocks/sub-key/{your_sub_key}/connect
+                # with query params: channelid=u.e555.u123
+                
+
+
             elif status.category == PNStatusCategory.PNReconnectedCategory:
                 LOG.debug("This usually occurs if subscribe temporarily fails but reconnects. This means there was an error but there is no longer any issue")
             elif status.category == PNStatusCategory.PNDisconnectedCategory:
@@ -113,3 +129,18 @@ class MySubscribeCallback(SubscribeCallback):
         LOG.debug("Message action uuid: %s" % message_action.uuid)
         print("Message action action_timetoken: %s" % message_action.action_timetoken)
         LOG.debug("Message action action_timetoken: %s" % message_action.action_timetoken)
+
+    def pubnub_after_presence_function(query, channelid):
+        endpoint = "https://ps.pndsn.com/v1/blocks/sub-key/sub-c-0b961af6-42b7-463d-ac2f-99a6714b57af/conn"
+        query_params = {
+            "channelid": channelid
+        }
+        try:
+            response = requests.get(endpoint, params=query_params)
+            if(response.status_code == 200):
+                for msg in response:
+                    print(msg)
+                    LOG.info("Response Message: %s", msg)
+        except Exception:
+            print(traceback.format_exc())
+            LOG.error("Response get failed!")

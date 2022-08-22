@@ -8,3 +8,4 @@ set_logger()
 # Runs main function on app/main_app.py
 if __name__ == '__main__':
     main_app.main()
+    pass

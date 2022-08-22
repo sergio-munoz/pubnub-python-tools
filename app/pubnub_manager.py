@@ -1,10 +1,11 @@
 """Manage PubNub"""
 from logger.logging_config import get_logger
-from app.pubnub_config import pnconfig
+from app.pubnub_config import PubnubConfig
 from app.pubnub_listener import MySubscribeCallback
 from app.pubnub_handle_disconnects import HandleDisconnectsCallback
 from app.pubnub_publish import my_publish_callback
 from app.pubnub_here_now_callback import here_now_callback
+from app.device_manager import DeviceManager
 from pubnub.pubnub import PubNub
 
 # Set Main Logger
@@ -12,8 +13,9 @@ LOG = get_logger()
 
 class PubNubManager():
     # Start PubNub 
-    def __init__(self, pubnub=PubNub(pnconfig)):
-        self.pn = pubnub
+    def __init__(self, subscribe_key=None, publish_key=None, user_id=None):
+        self.pn = PubNub(PubnubConfig(subscribe_key, publish_key, user_id))
+        self.device_manager = None
         self.__add_listeners()
         LOG.info("Started PubNub")
 
@@ -21,6 +23,9 @@ class PubNubManager():
         self.pn.add_listener(MySubscribeCallback()) # Add Listener Callback
         disconnect_listener = HandleDisconnectsCallback() # Create Disconnect Callback
         self.pn.add_listener(disconnect_listener) # Add Disconnect Callback
+    
+    def add_device_manager(self, device_manager_file_location=None):
+        self.device_manager = DeviceManager(db_location=device_manager_file_location)
     
     def subscribe(self, channels, channel_groups=None, time_token=None, presence=False):
         """channels: String|List|Tuple
