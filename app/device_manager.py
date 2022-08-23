@@ -27,7 +27,7 @@ class DeviceManager():
             LOG.warning("File not found. Creating...")
             try:
                 with open (self.db_location, "w") as f:
-                    return
+                    return []  # Returns empty list
             except Exception as e:
                 LOG.error("Error creating file")
                 return
@@ -50,9 +50,13 @@ class DeviceManager():
         LOG.debug("Loading device manager file: %s", self.db_location)
         
         local_devices = self.__read_local_file() # Creates file if doesn't exist
-        print(local_devices)
 
         # No devices in the file (empty)
+        if local_devices is None:
+            LOG.info("No devices in device manager file: %s", self.db_location)
+            return
+
+        # devices in the file (empty)
         if len(local_devices) <= 0:
             LOG.info("No devices in device manager file: %s", self.db_location)
             return
@@ -60,50 +64,33 @@ class DeviceManager():
         # Add found devices in file to our local devices set
         for device in local_devices: # equivalent of: for lines in file
             if str(device) in self.devices:
-                LOG.warning("could not add device: %s" % device)
+                LOG.warning("already on device list: %s" % device)
             else:
                 self.devices.add(str(device))
                 LOG.debug("device added: %s" % device)
 
         LOG.info("Loaded %i devices in device manager file: %s", len(self.devices), self.db_location)
 
-
-    def update_cache(self):
-        """Read from local file into our devices"""
-        for dev in self.__read_local_file():
-            self.devices.add(dev)
-
-    def sync_cache(self):
-        """Read from local file into our devices. Then write our version."""
-        for dev in self.__read_local_file():
-            self.devices.add(dev)
-        self.__write_local_file()
-
-    def force_cache(self):
-        """Write our version."""
-        self.__write_local_file()
-
-    def upgrade_cache(self):
-        """Write our version with append."""
-        self.__write_local_file(append=True)
+    def is_connected(self, user_id):
+        return user_id in self.devices
 
     def add_device(self, user_id):
-        """user_id: UUID
+        """Adding appends user to local set and writes to file.
+        user_id: UUID
         returns: Bool True if device was added
         """
-        # Adding appends our user to local file.
-
         # Check if user is connected
-        if not self._is_connected(user_id):
+        if not self.is_connected(user_id):
             self.devices.add(user_id)
-            self.update_cache() # Update local db (append)
+            self.__write_local_file() 
             LOG.debug("Added device to device list: %s", user_id)
             return True
         LOG.debug("Device already in device list: %s", user_id)
         return False
 
     def remove_device(self, user_id):
-        """user_id: UUID
+        """Removing deletes a user from local set and writes to file.
+        user_id: UUID
         returns: Bool True if device was removed
         """
         # Removing involves reading local file first to see if there were any changes and adding those
@@ -111,17 +98,14 @@ class DeviceManager():
         # Then we remove the devices that we want and overwrite the file.
 
         # Check if user is connected
-        if self._is_connected(user_id):
-            self.update_cache()  # read
+        if self.is_connected(user_id):
+            self.__read_local_file()
             self.devices.remove(user_id)
-            self.force_cache() # Update local db
+            self.__write_local_file()
             LOG.debug("Removed device from device list: %s", user_id)
             return True
         LOG.debug("Device not in device list: %s", user_id)
         return False
-    
-    def _is_connected(self, user_id):
-        return user_id in self.devices
     
     def get_devices(self):
         "Returns list of devices loaded in DeviceManager"
