@@ -19,9 +19,32 @@ class DeviceManager():
     def __read_local_file(self):
         """Read local file lines into readlines().
         Returns: list of lines in file."""
-        with open (self.db_location, "r+") as f:
-            lines = f.readlines()
-            return lines
+        try:
+            with open (self.db_location, "r") as f:
+                lines = f.readlines()
+                return lines
+        except FileNotFoundError as e:
+            LOG.warning("File not found. Creating...")
+            try:
+                with open (self.db_location, "w") as f:
+                    return
+            except Exception as e:
+                LOG.error("Error creating file")
+                return
+
+    def __write_local_file(self, append=False):
+        """Write our local file as append.
+        append: If true will append content instead of overwriting
+        NOTE: This might need some after cleaning of duplicates. The read is safe because it reads into a set.
+        """
+        # Verbose syntax to demonstrate operation
+        if append:
+            op = "a+"
+        else:
+            op = "w"
+        with open (self.db_location, op) as f:
+            f.writelines(f"{x}\n" for x in self.devices)
+        
 
     def __parse_db_location_local_file(self):
         LOG.debug("Loading device manager file: %s", self.db_location)
@@ -44,19 +67,6 @@ class DeviceManager():
 
         LOG.info("Loaded %i devices in device manager file: %s", len(self.devices), self.db_location)
 
-    def __write_local_file(self, append=False):
-        """Write our local file as append.
-        append: If true will append content instead of overwriting
-        NOTE: This might need some after cleaning of duplicates. The read is safe because it reads into a set.
-        """
-        # Verbose syntax to demonstrate operation
-        if append:
-            op = "a+"
-        else:
-            op = "w+"
-        with open (self.db_location, op) as f:
-            for dev in self.devices:
-                f.write("%s\n" % dev)
 
     def update_cache(self):
         """Read from local file into our devices"""

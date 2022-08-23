@@ -5,11 +5,13 @@ from cli.v1 import create_cli_v1
 LOG = get_logger()
 
 def main():
-    # Create PubNub Manager
-    pnmg = pubnub_manager.PubNubManager()
-
-    # Get CLI arguments
+    # Get CLI override args
     args = create_cli_v1()
+
+    # Create PubNub Manager
+    pnmg = pubnub_manager.PubNubManager(args.subscribe_key, args.publish_key, args.uuid)
+
+    # Do commands from CLI
     if args.device_manager:
         pnmg.add_device_manager(args.device_manager)
     if args.subscribe:
