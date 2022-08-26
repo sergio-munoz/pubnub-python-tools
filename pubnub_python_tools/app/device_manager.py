@@ -6,10 +6,12 @@ LOG = get_logger()
 
 class DeviceManager():
     
-    def __init__(self, db_location):
+    def __init__(self, db_location, on_request_callback=None, device_uuid=None):
         self.db_location = db_location # local file to persist data, can implement sql or else
         self.devices = set() # Unique elements only
         self.__parse_db_location_local_file()
+        self.on_request_callback = on_request_callback
+        self.device_uuid = device_uuid
         LOG.info("Loaded local device manager")
 
     def __repr__(self):
@@ -70,6 +72,16 @@ class DeviceManager():
                 LOG.debug("device added: %s" % device)
 
         LOG.info("Loaded %i devices in device manager file: %s", len(self.devices), self.db_location)
+
+    def _add_on_request_callback(self, on_request_callback):
+        """Add a on_request function callback"""
+        self.on_request_callback = on_request_callback
+        LOG.debug("registered on_request_callback")
+
+    def _add_device_uuid(self, device_uuid):
+        """Add a on_request function callback"""
+        self.device_uuid = device_uuid
+        LOG.debug("registered device_uuid")
 
     def is_connected(self, user_id):
         return user_id in self.devices

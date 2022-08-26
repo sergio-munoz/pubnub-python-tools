@@ -1,6 +1,6 @@
 """Configuration file for logging."""
 import logging
-from module_config import ROOT_DIR,DEFAULT_LOGGER_NAME,LOGGER_LEVEL,LOGGER_FORMAT
+from config.module_config import LOGGER_DIR,DEFAULT_LOGGER_NAME,LOGGER_LEVEL,LOGGER_FORMAT
 
 # Catchall
 if not LOGGER_LEVEL:
@@ -34,7 +34,7 @@ def set_logger(log_name=DEFAULT_LOGGER_NAME, log_level=LOGGER_LEVEL, format=LOGG
     formatter = set_formatter_format(format)
 
     # Set path of the logger using ROOT_DIR and log_name
-    path = f"{ROOT_DIR}/Logger/{log_name}.log"
+    path = f"{LOGGER_DIR}/{log_name}.log"
     print(f"Using {path} as the log file")
 
     # Set the and formatter and fileHandler

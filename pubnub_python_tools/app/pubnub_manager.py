@@ -6,6 +6,7 @@ from app.pubnub_handle_disconnects import HandleDisconnectsCallback
 from app.pubnub_publish import my_publish_callback
 from app.pubnub_here_now_callback import here_now_callback
 from app.device_manager import DeviceManager
+from app.pubnub_on_request import get
 from pubnub.pubnub import PubNub
 
 # Set Main Logger
@@ -16,7 +17,9 @@ class PubNubManager():
     def __init__(self, subscribe_key=None, publish_key=None, user_id=None):
         self.pn = PubNub(PubnubConfig(subscribe_key, publish_key, user_id))
         self.device_manager = None
+        self.on_request_callback = None
         self.__add_listeners()
+        self.device_uuid = user_id  # Register device as current user_id by default
         LOG.info("Started PubNub")
 
     def __add_listeners(self):
@@ -24,8 +27,18 @@ class PubNubManager():
         disconnect_listener = HandleDisconnectsCallback() # Create Disconnect Callback
         self.pn.add_listener(disconnect_listener) # Add Disconnect Callback
     
-    def add_device_manager(self, device_manager_file_location=None):
-        self.device_manager = DeviceManager(db_location=device_manager_file_location)
+    def add_device_manager(self, device_manager_file_location):
+        self.device_manager = DeviceManager(device_manager_file_location)
+
+    def add_on_request_get_callback(self, url, params, body):
+        if self.device_manager:
+            self.device_manager._add_on_request_callback(get(url, params, body))
+            LOG.debug("custom on_request_get_callback added")
+        else:
+            LOG.warn("add device manager first: add_device_manager()")
+
+    def add_device_uuid(self, device_uuid):
+        self.device_uuid = device_uuid
     
     def subscribe(self, channels, channel_groups=None, time_token=None, presence=False):
         """channels: String|List|Tuple

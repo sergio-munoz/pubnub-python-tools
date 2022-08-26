@@ -1,4 +1,6 @@
 # pubnub-python-tools
+[![ghlastcommit](https://img.shields.io/github/last-commit/sergio-munoz/pubnub-python-tools?style=flat-square)](https://img.shields.io/github/last-commit/sergio-munoz/pubnub-python-tools?style=flat-square)
+
 Useful Tools for interacting with PubNub using Python. 
 
 ## Pre-requisites

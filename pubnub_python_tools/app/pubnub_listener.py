@@ -5,7 +5,6 @@ from pubnub.enums import PNOperationType, PNStatusCategory
 import requests
 import traceback
 
-
 LOG = get_logger()
 
 class MySubscribeCallback(SubscribeCallback):
@@ -13,6 +12,16 @@ class MySubscribeCallback(SubscribeCallback):
     def __init__(self , device_manager=None):
         # Add device_manager capabilities
         self.device_manager = device_manager
+        self.on_request_callback = None
+        self.device_uuid = None
+
+    def _add_get_callback(self, get_callback):
+        """Function get callback"""
+        self.on_request_callback = get_callback
+
+    def _add_device_uuid(self, device_uuid):
+        """Target Device UUID"""
+        self.device_uuid = device_uuid
 
     def message(self, pubnub, message):
         print("Message channel: %s" % message.channel)
@@ -83,8 +92,30 @@ class MySubscribeCallback(SubscribeCallback):
                 # set connected = true
                 # https://ps.pndsn.com/v1/blocks/sub-key/{your_sub_key}/connect
                 # with query params: channelid=u.e555.u123
-                
+                if self.on_request_callback:
+                    if not self.device_manager:
+                        LOG.warning("Local device manager not found. Function might not work as expected.")
+                        return  # Maybe return something else?
+                    else:
+                        if self.device_manager.is_connected(self.device_uuid):
+                            LOG.info("Device already connected to pubnub!")
+                            return # Maybe return something else
+                        else:
+                            LOG.info("Device not connected. Making callback to PubNub.")
+                            try:
+                                res = self.on_request_callback()  # Send PubNub on_request HTTP Rest call
+                                if res.status_code == 200:
+                                    for msg in res:
+                                        print(msg)
+                                        LOG.info("On Request Response Message: %s", msg)
+                            except Exception:
+                                print(traceback.format_exc())
+                                LOG.error("Response get failed!")
 
+                # How to get channelid from request?
+                # params = self.on_request_callback().params 
+                # # '{"channelid": "u.001.UUID" }'
+                # chid = params["channelid"]
 
             elif status.category == PNStatusCategory.PNReconnectedCategory:
                 LOG.debug("This usually occurs if subscribe temporarily fails but reconnects. This means there was an error but there is no longer any issue")
@@ -130,7 +161,7 @@ class MySubscribeCallback(SubscribeCallback):
         print("Message action action_timetoken: %s" % message_action.action_timetoken)
         LOG.debug("Message action action_timetoken: %s" % message_action.action_timetoken)
 
-    def pubnub_after_presence_function(query, channelid):
+    def pubnub_after_presence_function(self, query, channelid):
         endpoint = "https://ps.pndsn.com/v1/blocks/sub-key/sub-c-0b961af6-42b7-463d-ac2f-99a6714b57af/conn"
         query_params = {
             "channelid": channelid
@@ -140,7 +171,7 @@ class MySubscribeCallback(SubscribeCallback):
             if(response.status_code == 200):
                 for msg in response:
                     print(msg)
-                    LOG.info("Response Message: %s", msg)
+                    LOG.info("After Presence Response Message: %s", msg)
         except Exception:
             print(traceback.format_exc())
             LOG.error("Response get failed!")

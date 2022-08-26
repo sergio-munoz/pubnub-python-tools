@@ -1,7 +1,7 @@
 """Simple test file for main_app.py."""
-from app import main_app
+from pubnub_python_tools.app import main_app
+from pubnub_python_tools.logger.logging_config import set_logger
 from logging import DEBUG
-from logger.logging_config import set_logger
 from unittest import TestCase
 
 # Create a logger if needed for testing cases

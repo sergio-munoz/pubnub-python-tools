@@ -1,12 +1,15 @@
 """Simple test file for device_manager.py."""
-from app import device_manager
+from pubnub_python_tools.app import device_manager
+from pubnub_python_tools.logger.logging_config import set_logger
 from logging import DEBUG
-from logger.logging_config import set_logger
 from unittest import TestCase
 import os
 
 # Create a logger if needed for testing cases
 LOG = set_logger("test_device_manager", DEBUG)  # Defaults as INFO
+
+# Global test folder
+TEST_FOLDER = str(os.path.dirname(os.path.abspath(__file__)))
 
 class RunMainAppTests(TestCase):
 
@@ -15,14 +18,15 @@ class RunMainAppTests(TestCase):
         LOG.info("Testing __init__()")
 
         # Test variables
-        LOCATION = "/Users/sergio.munoz/Data/Git/pubnub-python-tools/test/db/test_empty.db"
+        LOCATION = TEST_FOLDER+"/db/test_empty.db"
         dm = device_manager.DeviceManager(LOCATION)
         self.assertEqual(dm.db_location, LOCATION)
 
     def test_read_local_file(self):
         """Tests __read_local_file function from device_manager.py."""
         LOG.info("Testing __read_local_file()")
-        LOCATION = "/Users/sergio.munoz/Data/Git/pubnub-python-tools/test/db/test_read_one.db"
+
+        LOCATION = TEST_FOLDER+"/db/test_read_one.db"
         dm = device_manager.DeviceManager(LOCATION)
 
         # There is only one device at file
@@ -32,7 +36,8 @@ class RunMainAppTests(TestCase):
     def test_write_local_file(self):
         """Tests __write_local_file function from device_manager.py."""
         LOG.info("Testing __write_local_file()")
-        LOCATION = "/Users/sergio.munoz/Data/Git/pubnub-python-tools/test/db/test_write_two.db"
+
+        LOCATION = TEST_FOLDER+"/db/test_write_two.db"
         dm = device_manager.DeviceManager(LOCATION)
 
         # Add a new device
@@ -53,7 +58,7 @@ class RunMainAppTests(TestCase):
         LOG.info("Testing test_parse_db_location_local_file()")
 
         # DB File location
-        LOCATION = "/Users/sergio.munoz/Data/Git/pubnub-python-tools/test/db/test_read_one.db"
+        LOCATION = TEST_FOLDER+"/db/test_read_one.db"
         dm = device_manager.DeviceManager(LOCATION)
 
         # Assert 1 device found
@@ -69,7 +74,7 @@ class RunMainAppTests(TestCase):
         LOG.info("Testing is_connected()")
 
         # DB File location
-        LOCATION = "/Users/sergio.munoz/Data/Git/pubnub-python-tools/test/db/test_empty.db"
+        LOCATION = TEST_FOLDER+"/db/test_empty.db"
         dm = device_manager.DeviceManager(LOCATION)
 
         # Assert is not connected
@@ -85,7 +90,7 @@ class RunMainAppTests(TestCase):
         LOG.info("Testing add_device()")
 
         # DB File location
-        LOCATION = "/Users/sergio.munoz/Data/Git/pubnub-python-tools/test/db/test_add_device.db"
+        LOCATION = TEST_FOLDER+"/db/test_add_device.db"
         dm = device_manager.DeviceManager(LOCATION)
 
         # Add three devices
@@ -105,7 +110,7 @@ class RunMainAppTests(TestCase):
         LOG.info("Testing remove_device()")
 
         # DB File location
-        LOCATION = "/Users/sergio.munoz/Data/Git/pubnub-python-tools/test/db/test_remove_device.db"
+        LOCATION = TEST_FOLDER+"/db/test_remove_device.db"
         dm = device_manager.DeviceManager(LOCATION)
 
         # Add three devices

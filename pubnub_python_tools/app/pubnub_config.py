@@ -1,7 +1,7 @@
 """Configuration file for pubnub."""
 from logger.logging_config import get_logger
 from pubnub.pnconfiguration import PNConfiguration
-from module_config import SUBSCRIBE_KEY,PUBLISH_KEY,USER_ID
+from config.module_config import SUBSCRIBE_KEY,PUBLISH_KEY,USER_ID
 
 LOG = get_logger()
 
