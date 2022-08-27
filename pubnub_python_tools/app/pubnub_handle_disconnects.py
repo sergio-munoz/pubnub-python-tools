@@ -1,6 +1,6 @@
-from logger.logging_config import get_logger
 from pubnub.callbacks import SubscribeCallback
 from pubnub.enums import PNStatusCategory
+from ..logger.logging_config import get_logger
 
 LOG = get_logger()
 

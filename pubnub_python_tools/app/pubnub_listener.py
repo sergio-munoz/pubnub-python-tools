@@ -1,9 +1,9 @@
 """Pubnub Subscribe Callback"""
-from logger.logging_config import get_logger
 from pubnub.callbacks import SubscribeCallback
 from pubnub.enums import PNOperationType, PNStatusCategory
 import requests
 import traceback
+from ..logger.logging_config import get_logger
 
 LOG = get_logger()
 

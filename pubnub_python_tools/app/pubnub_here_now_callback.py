@@ -1,5 +1,5 @@
 """Pubnub HereNow Callback"""
-from logger.logging_config import get_logger
+from ..logger.logging_config import get_logger
 
 LOG = get_logger()
 

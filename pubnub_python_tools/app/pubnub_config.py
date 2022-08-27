@@ -1,7 +1,7 @@
 """Configuration file for pubnub."""
-from logger.logging_config import get_logger
 from pubnub.pnconfiguration import PNConfiguration
-from config.module_config import SUBSCRIBE_KEY,PUBLISH_KEY,USER_ID
+from ..logger.logging_config import get_logger
+from ..config.module_config import SUBSCRIBE_KEY,PUBLISH_KEY,USER_ID
 
 LOG = get_logger()
 
@@ -18,3 +18,5 @@ class PubnubConfig():
         LOG.debug("Pubnub Config: subscribe_key={},publish_key={},user_id={}".format(
             self.pnconfig.subscribe_key, self.pnconfig.publish_key, self.pnconfig.user_id)
             )
+    def get_config(self):
+        return self.pnconfig

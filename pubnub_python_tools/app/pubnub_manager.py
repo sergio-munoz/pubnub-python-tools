@@ -1,12 +1,13 @@
 """Manage PubNub"""
-from logger.logging_config import get_logger
-from app.pubnub_config import PubnubConfig
-from app.pubnub_listener import MySubscribeCallback
-from app.pubnub_handle_disconnects import HandleDisconnectsCallback
-from app.pubnub_publish import my_publish_callback
-from app.pubnub_here_now_callback import here_now_callback
-from app.device_manager import DeviceManager
-from app.pubnub_on_request import get
+import sys
+from ..logger.logging_config import get_logger
+from .pubnub_config import PubnubConfig
+from .pubnub_listener import MySubscribeCallback
+from .pubnub_handle_disconnects import HandleDisconnectsCallback
+from .pubnub_publish import my_publish_callback
+from .pubnub_here_now_callback import here_now_callback
+from .device_manager import DeviceManager
+from .pubnub_on_request import get
 from pubnub.pubnub import PubNub
 
 # Set Main Logger
@@ -14,8 +15,12 @@ LOG = get_logger()
 
 class PubNubManager():
     # Start PubNub 
-    def __init__(self, subscribe_key=None, publish_key=None, user_id=None):
-        self.pn = PubNub(PubnubConfig(subscribe_key, publish_key, user_id))
+    def __init__(self, subscribe_key="", publish_key="", user_id=""):
+        pnconfig = PubnubConfig(subscribe_key, publish_key, user_id).get_config()
+        self.pn = PubNub(pnconfig)
+        if not self.pn:
+            LOG.critical("Invalid PubNub Configuration. Check your keys/user_id.")
+            exit()
         self.device_manager = None
         self.on_request_callback = None
         self.__add_listeners()

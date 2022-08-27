@@ -1,6 +1,6 @@
 """Configuration file for logging."""
 import logging
-from config.module_config import LOGGER_DIR,DEFAULT_LOGGER_NAME,LOGGER_LEVEL,LOGGER_FORMAT
+from ..config.module_config import LOGGER_DIR,DEFAULT_LOGGER_NAME,LOGGER_LEVEL,LOGGER_FORMAT
 
 # Catchall
 if not LOGGER_LEVEL:

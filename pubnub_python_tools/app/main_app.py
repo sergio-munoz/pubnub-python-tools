@@ -1,19 +1,26 @@
-from app import pubnub_manager
-from cli.v1 import get_parser
-from logger.logging_config import get_logger
-from config.module_config import SUBSCRIBE_KEY, PUBLISH_KEY, USER_ID
-from config.http_on_request_on_connect import ON_REQUEST_URL, ON_REQUEST_PARAMS, ON_REQUEST_BODY
+#from app import pubnub_manager
 import sys
+from . import pubnub_manager
+from ..cli.v1 import get_parser
+from ..logger.logging_config import get_logger
+#from ..config.module_config import SUBSCRIBE_KEY, PUBLISH_KEY, USER_ID
+from ..config import module_config
+#from ..config.http_on_request_on_connect import ON_REQUEST_URL, ON_REQUEST_PARAMS, ON_REQUEST_BODY
+from ..config import http_on_request_on_connect as oc
 
 LOG = get_logger()
 
-def main():
+def main(args=None):
 # PubNub Environment Variables
-
-    args = get_parser(sys.argv[1:])
+    if not args:
+        args = sys.argv[1:]
+    args = get_parser(args)
     print(args)
-    print("HERE!")
-    
+
+    SUBSCRIBE_KEY = module_config.SUBSCRIBE_KEY
+    PUBLISH_KEY = module_config.PUBLISH_KEY
+    USER_ID = module_config.USER_ID
+
     if args.subscribe_key is not None:
         SUBSCRIBE_KEY = args.subscribe_key 
     if args.publish_key is not None:
@@ -29,8 +36,8 @@ def main():
         pnmg.add_device_manager(args.device_manager)
 
         # Get function callback
-        if ON_REQUEST_URL and ON_REQUEST_PARAMS and ON_REQUEST_BODY:
-            pnmg.add_on_request_get_callback(ON_REQUEST_URL, ON_REQUEST_PARAMS, ON_REQUEST_BODY)
+        if oc.ON_REQUEST_URL and oc.ON_REQUEST_PARAMS and oc.ON_REQUEST_BODY:
+            pnmg.add_on_request_get_callback(oc.ON_REQUEST_URL, oc.ON_REQUEST_PARAMS, oc.ON_REQUEST_BODY)
         if USER_ID is not None:
             pnmg.add_device_uuid(USER_ID)
 

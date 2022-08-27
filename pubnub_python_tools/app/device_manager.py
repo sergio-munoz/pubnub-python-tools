@@ -1,5 +1,5 @@
 """Manage Devices locally in the client side with overlapping UUIDs."""
-from logger.logging_config import get_logger
+from ..logger.logging_config import get_logger
 
 # Set Main Logger
 LOG = get_logger()
