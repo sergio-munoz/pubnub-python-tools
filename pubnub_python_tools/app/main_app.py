@@ -45,7 +45,9 @@ def main(args=None):
         pnmg.subscribe(args.subscribe, presence=args.presence)
     if args.publish:
         if not args.message:
-            LOG.error("Can't publish empty message")
+            err_msg = "Can't publish empty message. Use -m flag." 
+            print(err_msg)
+            LOG.error(err_msg)
             return
         pnmg.publish_message(args.publish, args.message)
     if args.here_now:

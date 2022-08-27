@@ -7,7 +7,10 @@ def my_publish_callback(envelope, status):
     if not status.is_error():
         LOG.info("Message successfully published to specified channel.")
     else:
-        LOG.error(str(status))
+        LOG.error("Error %s" % str(status.error_data.exception))
+        LOG.error("Error category #%d" % status.category)
+        print("Error %s" % str(status.error_data.exception))
+        print("Error category #%d" % status.category)
         # Handle message publish error. Check 'category' property to find out possible issue
         # because of which request did fail.
         # Request can be resent using: [status retry];
