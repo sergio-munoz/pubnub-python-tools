@@ -1,132 +1,112 @@
-"""Manage PubNub Asyncio"""
-from ..logger.logging_config import get_logger
+"""Manage PubNub Asyncio."""
+from pubnub.pubnub_asyncio import PubNubAsyncio
+
 from .pubnub_config import PubnubConfig
 from .pubnub_listener import MySubscribeCallback
+from .pubnub_here_now_callback import here_now_callback  # TODO: refactor this
 from .pubnub_handle_disconnects import HandleDisconnectsCallback
-from .pubnub_publish import my_publish_callback_asyncio
-from pubnub.pubnub_asyncio import PubNubAsyncio
-from pubnub.exceptions import PubNubException
-import asyncio
+from ..logger.logging_config import get_logger
 
-# Set logger
-LOG = get_logger()
+LOG = get_logger()  # Get logger if needed. Default: INFO
 
 class PubNubAsyncioManager():
-    """Create a new PubNub Asyncio instance"""
+    """Create a new PubNub Asyncio instance."""
 
-    def __init__(self, subscribe_key="", publish_key="", user_id="", default_listeners=True):
+    def __init__(self, subscribe_key=None, publish_key=None, user_id=None, default_listeners=True):
         """Start PubNub Asyncio Manager
-        :subscribe_key: Subscribe Key for PubNub
-        :publish_key: Publish Key for PubNub
-        :user_id: UUID for PubNub
-        :default_listeners: set to false to add your own listeners (used for testing)
+
+        Args:
+            subscribe_key (str, optional): Subscribe key for PubNub.
+            publish_key (str, optional): Publish key for PubNub.
+            user_id (str, optional): User ID or UUID for this PubNub instance.
+            default_listeners (bool, optional): Set to false to add your own listeners. Defaults to True.
         """
-        LOG.info("Starting PubNub async instance")
+        # Check for None values
+        if not subscribe_key or not publish_key or not user_id:
+            LOG.critical("Missing credentials/uuid for PubNub Configuration.")
+            exit()
+
         # Start PubNubAsyncio
+        LOG.info("Starting PubNub Async instance.")
         self.pn = PubNubAsyncio(PubnubConfig(subscribe_key, publish_key, user_id).get_config())
         if not self.pn:
             # Something went wrong!
             LOG.critical("Invalid PubNub Configuration. Check your keys/user_id.")
             exit()
+
+        # Duplicate user_id as device_uuid for [future](link) PubNub support
+        self.device_uuid = user_id  # Register device as current user_id by default
+
         # Setup default listeners
         if default_listeners:
             self.__add_listeners()
-        # Add device manager for 'local' presence management
+
+        # Add device manager for 'local' presence management (optional)
         self.device_manager = None
-        # Add PubNub http on request function callback
+
+        # Add PubNub http on request function callback (optional)
         self.on_request_callback = None
-        # Duplicate user_id as device_uuid for [future](link) PubNub support
-        self.device_uuid = user_id  # Register device as current user_id by default
-        LOG.info("Started PubNub async instance")
+
+        LOG.info("Started PubNub Async instance successfully.")
 
     def __add_listeners(self):
-        """Add default callback listeners to instance
+        """Add default callback listeners to instance.
         """
         self.pn.add_listener(MySubscribeCallback())  # Add Subscribe Callback
         disconnect_listener = HandleDisconnectsCallback() # Create Disconnect Callback
         self.pn.add_listener(disconnect_listener) # Add Disconnect Callback
-    
+
     def add_listener(self, listener):
-        """Manually add a callback listener to instance
-        :listener: function callback 
+        """Manually add a callback listener to instance.
+
+        Args:
+            listener (function): Function callback.
         """
         self.pn.add_listener(listener)
 
-    def subscribe(self, channels):
-        """Subscribe to a channel indefinitely blocking
-        :channels: channel(s) to subscribe to
-        """
-        self.pn.subscribe().channels(channels).execute()
+    def subscribe(self, channels, channel_groups=None, timetoken=None, presence=False):
+        """Subscribe to a channel indefinitely (blocking).
 
-    async def publish_async(self, channel, message):
-        """ Publish async
-        :channel: channel to publish
-        :message: message to publish
-        :returns: future envelope
+        Args:
+            channels (String|List|Tuple): Channel(s) to subscribe to.
+            channel_groups (String|List|Tuple, optional): Channel Group(s) to subscribe to.
+            timetoken (Int, optional): Subscribe with timetoken.
+            presence (bool, optional): Subscribe with presence. Defaults to False.
+        """
+        function_builder = self.pn.subscribe().channels(channels)
+        if channel_groups:
+            function_builder = function_builder.channel_groups(channel_groups)
+        if timetoken:
+            function_builder = function_builder.with_timetoken(int(timetoken))
+        if presence:
+            function_builder = function_builder.with_presence()
+        function_builder.execute()
+
+    async def publish(self, channel, message):
+        """Publish a message to a channel async.
+
+        Args:
+            channel (String): Channel to publish.
+            message (String): Message to publish.
+
+        Returns:
+            future: Asyncio future envelope.
         """
         return await self.pn.publish().channel(channel).message(message).future()
 
-    # WARNING: NOT TESTED
-    # TODO: TEST
-    async def publish(self, channel, message):
-        """Publish Async """
-        return await self.pn.publish().channel(channel).message(message).future().add_done_callback(my_publish_callback_asyncio)
-        # return await asyncio.ensure_future(
-        #     self.pn.publish().channel(channel).message(message).future()
-        # ).add_done_callback(my_publish_callback_asyncio)
+    async def here_now(self, channels, include_uuids=True, include_state=False):
+        """HereNow async call on a channel.
 
-    # WARNING: NOT TESTED
-    # TODO: TEST
-    async def start_loop(self, *function_callback, run_forever=True):
+        Args:
+            channels (str|list|tuple): Channel(s) to call here_now.
+            include_uuids (bool, optional): Include UUIDs. Defaults to True.
+            include_state (bool, optional): Include State. Defaults to False.
         """
-        function_callback: function(s) to be run until_complete.
-        run_forever: keep the loop running forever.
-        """
-        loop = asyncio.get_event_loop()
-        for function in function_callback:
-            LOG.info("Loop will continue to run forever.")
-            loop.run_until_complete(function)
-        if run_forever:
-            LOG.info("Loop will continue to run forever.")
-            return loop.run_forever()
-
-    # WARNING: NOT TESTED
-    # TODO: TEST
-    async def publish_future(self, channel, message):
-        """Publish using future."""
-        res = await self.pn.publish().message(message).channel(channel).future()
-
-        if res.is_error():
-            print("Error: %s" % res)
-            print("category id: #%d" % res.status.category)
-            print("operation id: #%d" % res.status.operation)
-            #_handle_error(e)
-            LOG.error("Error publishing message!")
-            self.publish_timetoken = 0
-            return None
-        else:
-            print(res.result)
-            LOG.info("Published message correctly.")
-            # Publish success with timetoken 16621787928333380
-            LOG.debug(res.result) 
-            # You could instead return only the timetoken instead of having to extract it.
-            self.publish_timetoken = res.publish_timetoken
-            return res.result
-    # WARNING: NOT TESTED
-    # TODO: TEST
-
-    async def publish_response(self, channel, message):
-        try:
-            result = await self.pn.publish().message(message).channel(channel).result()
-            print("RESULT: ", result)
-            return result
-        except PubNubException as e:
-            print("PubNubException: %s" % e) 
-            print("category id: #%d" % e.status.category)
-            print("operation id: #%d" % e.status.operation)
-            #_handle_error(e) Add to log and cry
-            return None
-        except Exception as e:
-            print("Error: %s" % e)
-            #_handle_error(e)
-            return None
+        function_builder = self.pn.here_now()
+        if channels:
+            function_builder = function_builder.channels(channels)
+        if include_uuids:
+            function_builder = function_builder.include_uuids(include_uuids)
+        if include_state:
+            function_builder = function_builder.include_state(include_state)
+        return await function_builder.future()

@@ -1,22 +1,45 @@
-"""Pubnub Subscribe Callback"""
+"""PubNub Listeners and Callbacks."""
+import traceback
+import requests
+
 from pubnub.callbacks import SubscribeCallback
 from pubnub.enums import PNOperationType, PNStatusCategory
-import requests
-import traceback
+
 from ..logger.logging_config import get_logger
 
 LOG = get_logger()
 
 class MySubscribeCallback(SubscribeCallback):
+    """Create a Subscribe Callback."""
+
     def __init__(self, device_manager=None):
+        """Hold callback results on local variables.
+
+        Args:
+            device_manager (file, optional): Add device manager. Defaults to None.
+        """
         self._message = None
+        self._presence = None
         # Add device_manager capabilities
         self.device_manager = device_manager
         self.on_request_callback = None
         self.device_uuid = None
 
-    def get_result(self):
+    def get_message(self):
+        """Return internal callback message result
+
+        Returns:
+            dict: message result
+        """
         return self._message
+
+    def get_presence(self):
+        """Return internal callback presence result
+
+        Returns:
+            dict: presence result
+        """
+        return self._presence
 
     def _add_get_callback(self, get_callback):
         """Function get callback"""
@@ -27,16 +50,15 @@ class MySubscribeCallback(SubscribeCallback):
         self.device_uuid = device_uuid
 
     def message(self, pubnub, message):
-        print("Message channel: %s" % message.channel)
-        LOG.debug("Message channel: %s" % message.channel)
-        print("Message subscription: %s" % message.subscription)
-        LOG.debug("Message subscription: %s" % message.subscription)
-        print("Message timetoken: %s" % message.timetoken)
-        LOG.debug("Message timetoken: %s" % message.timetoken)
-        print("Message payload: %s" % message.message)
-        LOG.debug("Message payload: %s" % message.message)
-        print("Message publisher: %s" % message.publisher)
-        LOG.debug("Message publisher: %s" % message.publisher)
+        """Message callback. Sets private message variable."
+        Sets:
+            _message (dict): Message.
+        """
+        LOG.debug("Message channel: %s", message.channel)
+        LOG.debug("Message subscription: %s", message.subscription)
+        LOG.debug("Message timetoken: %s", message.timetoken)
+        LOG.debug("Message payload: %s", message.message)
+        LOG.debug("Message publisher: %s", message.publisher)
         self._message = {
             "channel": message.channel,
             "subscription": message.subscription,
@@ -44,49 +66,47 @@ class MySubscribeCallback(SubscribeCallback):
             "payload": message.message,
             "publisher": message.publisher
         }
+        print("Got message: ", self._message)
 
     def presence(self, pubnub, presence):
+        """Presence callback. Sets private presence variable."
+        Sets:
+            _presence (dict): Presence.
+        """
         # Can be join, leave, state-change, timeout, or interval
-        print("Presence event: %s" % presence.event)
-        LOG.debug("Presence event: %s" % presence.event)
-
+        LOG.debug("Presence event: %s", presence.event)
         # The channel to which the message was published
-        print("Presence channel: %s" % presence.channel)
-        LOG.debug("Presence channel: %s" % presence.channel)
-
+        LOG.debug("Presence channel: %s", presence.channel)
         # Number of users subscribed to the channel
-        print("Presence occupancy: %s" % presence.occupancy)
-        LOG.debug("Presence occupancy: %s" % presence.occupancy)
-
+        LOG.debug("Presence occupancy: %s", presence.occupancy)
         # User state
-        print("Presence state: %s" % presence.state)
-        LOG.debug("Presence state: %s" % presence.state)
-
+        LOG.debug("Presence state: %s", presence.state)
         # Channel group or wildcard subscription match, if any
-        print("Presence subscription: %s" % presence.subscription)
-        LOG.debug("Presence subscription: %s" % presence.subscription)
-
+        LOG.debug("Presence subscription: %s", presence.subscription)
         # UUID to which this event is related
-        print("Presence UUID: %s" % presence.uuid)
-        LOG.debug("Presence UUID: %s" % presence.uuid)
-
+        LOG.debug("Presence UUID: %s", presence.uuid)
         # Publish timetoken
-        print("Presence timestamp: %s" % presence.timestamp)
-        LOG.debug("Presence timestamp: %s" % presence.timestamp)
-
+        LOG.debug("Presence timestamp: %s", presence.timestamp)
         # Current timetoken
-        print("Presence timetoken: %s" % presence.timetoken)
-        LOG.debug("Presence timetoken: %s" % presence.timetoken)
-
-
-        joined = presence.join
-        LOG.debug("List of users that have joined the channel (if event is 'interval'): %s", joined)
-
-        left = presence.leave
-        LOG.debug("List of users that have left the channel (if event is 'interval'): %s", left)
-
-        timed_out = presence.timeout
-        LOG.debug("List of users that have timed-out off the channel (if event is 'interval'): %s", timed_out)
+        LOG.debug("Presence timetoken: %s", presence.timetoken)
+        # Interval Mode
+        LOG.debug("List of users that have joined the channel (if event is 'interval'): %s", presence.join)
+        LOG.debug("List of users that have left the channel (if event is 'interval'): %s", presence.leave)
+        LOG.debug("List of users that have timed-out off the channel (if event is 'interval'): %s", presence.timeout)
+        self._presence = {
+            "event": presence.event,
+            "channel": presence.channel,
+            "occupancy": presence.occupancy,
+            "state": presence.state,
+            "subscription": presence.subscription,
+            "UUID": presence.uuid,
+            "timestamp": presence.timestamp,
+            "timetoken": presence.timetoken,
+            "joined": presence.join,
+            "left": presence.leave,
+            "timed_out": presence.timeout
+        }
+        print("Got presence: ", self._presence)
 
     def status(self, pubnub, status):
 
