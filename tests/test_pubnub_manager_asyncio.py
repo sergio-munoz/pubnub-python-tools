@@ -1,13 +1,16 @@
+"""Unittest file for pubnub_manager_asyncio.py."""
+import asyncio
+
+from functools import wraps
+from logging import DEBUG
+from unittest import TestCase
+
 from pubnub_python_tools.app import pubnub_manager_asyncio
 from pubnub_python_tools.app.pubnub_listener import MySubscribeCallback
 from pubnub_python_tools.logger.logging_config import set_logger
 from pubnub_python_tools.config.module_config import SUBSCRIBE_KEY, PUBLISH_KEY
-from logging import DEBUG
-from functools import wraps
-from unittest import TestCase
-import asyncio
 
-LOG = set_logger("test_asyncio", DEBUG)  # Defaults as INFO
+LOG = set_logger("test_asyncio", DEBUG)  # Create a logger if needed. Default: INFO
 
 def async_test(f):
     """

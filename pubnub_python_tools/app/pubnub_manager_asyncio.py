@@ -1,5 +1,4 @@
 """Manage PubNub Asyncio"""
-import asyncio
 from ..logger.logging_config import get_logger
 from .pubnub_config import PubnubConfig
 from .pubnub_listener import MySubscribeCallback
@@ -7,20 +6,22 @@ from .pubnub_handle_disconnects import HandleDisconnectsCallback
 from .pubnub_publish import my_publish_callback_asyncio
 from pubnub.pubnub_asyncio import PubNubAsyncio
 from pubnub.exceptions import PubNubException
+import asyncio
 
 # Set logger
 LOG = get_logger()
 
 class PubNubAsyncioManager():
+    """Create a new PubNub Asyncio instance"""
 
     def __init__(self, subscribe_key="", publish_key="", user_id="", default_listeners=True):
         """Start PubNub Asyncio Manager
         :subscribe_key: Subscribe Key for PubNub
         :publish_key: Publish Key for PubNub
         :user_id: UUID for PubNub
-        :default_listeners: set to false to add your own listeners (for testing)
+        :default_listeners: set to false to add your own listeners (used for testing)
         """
-        LOG.info("Starting PubNub")
+        LOG.info("Starting PubNub async instance")
         # Start PubNubAsyncio
         self.pn = PubNubAsyncio(PubnubConfig(subscribe_key, publish_key, user_id).get_config())
         if not self.pn:
@@ -36,18 +37,58 @@ class PubNubAsyncioManager():
         self.on_request_callback = None
         # Duplicate user_id as device_uuid for [future](link) PubNub support
         self.device_uuid = user_id  # Register device as current user_id by default
-        LOG.info("Started PubNub")
+        LOG.info("Started PubNub async instance")
 
     def __add_listeners(self):
+        """Add default callback listeners to instance
+        """
         self.pn.add_listener(MySubscribeCallback())  # Add Subscribe Callback
         disconnect_listener = HandleDisconnectsCallback() # Create Disconnect Callback
         self.pn.add_listener(disconnect_listener) # Add Disconnect Callback
     
     def add_listener(self, listener):
+        """Manually add a callback listener to instance
+        :listener: function callback 
+        """
         self.pn.add_listener(listener)
 
     def subscribe(self, channels):
+        """Subscribe to a channel indefinitely blocking
+        :channels: channel(s) to subscribe to
+        """
         self.pn.subscribe().channels(channels).execute()
+
+    async def publish_async(self, channel, message):
+        """ Publish async
+        :channel: channel to publish
+        :message: message to publish
+        :returns: future envelope
+        """
+        return await self.pn.publish().channel(channel).message(message).future()
+
+    # WARNING: NOT TESTED
+    # TODO: TEST
+    async def publish(self, channel, message):
+        """Publish Async """
+        return await self.pn.publish().channel(channel).message(message).future().add_done_callback(my_publish_callback_asyncio)
+        # return await asyncio.ensure_future(
+        #     self.pn.publish().channel(channel).message(message).future()
+        # ).add_done_callback(my_publish_callback_asyncio)
+
+    # WARNING: NOT TESTED
+    # TODO: TEST
+    async def start_loop(self, *function_callback, run_forever=True):
+        """
+        function_callback: function(s) to be run until_complete.
+        run_forever: keep the loop running forever.
+        """
+        loop = asyncio.get_event_loop()
+        for function in function_callback:
+            LOG.info("Loop will continue to run forever.")
+            loop.run_until_complete(function)
+        if run_forever:
+            LOG.info("Loop will continue to run forever.")
+            return loop.run_forever()
 
     # WARNING: NOT TESTED
     # TODO: TEST
@@ -89,36 +130,3 @@ class PubNubAsyncioManager():
             print("Error: %s" % e)
             #_handle_error(e)
             return None
-
-    async def publish_async(self, channel, message):
-        """ Publish async
-        :channel: channel to publish
-        :message: message to publish
-        :returns: future envelope
-        """
-        return await self.pn.publish().channel(channel).message(message).future()
-
-    # WARNING: NOT TESTED
-    # TODO: TEST
-    async def publish(self, channel, message):
-        """Publish Async """
-        return await self.pn.publish().channel(channel).message(message).future().add_done_callback(my_publish_callback_asyncio)
-        # return await asyncio.ensure_future(
-        #     self.pn.publish().channel(channel).message(message).future()
-        # ).add_done_callback(my_publish_callback_asyncio)
-
-    # WARNING: NOT TESTED
-    # TODO: TEST
-    async def start_loop(self, *function_callback, run_forever=True):
-        """
-        function_callback: function(s) to be run until_complete.
-        run_forever: keep the loop running forever.
-        """
-        loop = asyncio.get_event_loop()
-        for function in function_callback:
-            LOG.info("Loop will continue to run forever.")
-            loop.run_until_complete(function)
-        if run_forever:
-            LOG.info("Loop will continue to run forever.")
-            return loop.run_forever()
-
