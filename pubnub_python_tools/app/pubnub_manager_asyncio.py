@@ -13,17 +13,28 @@ LOG = get_logger()
 
 class PubNubAsyncioManager():
 
-    def __init__(self, subscribe_key="", publish_key="", user_id=""):
-        """Start PubNub Asyncio
+    def __init__(self, subscribe_key="", publish_key="", user_id="", default_listeners=True):
+        """Start PubNub Asyncio Manager
+        :subscribe_key: Subscribe Key for PubNub
+        :publish_key: Publish Key for PubNub
+        :user_id: UUID for PubNub
+        :default_listeners: set to false to add your own listeners (for testing)
         """
-        pnconfig = PubnubConfig(subscribe_key, publish_key, user_id).get_config()
-        self.pn = PubNubAsyncio(pnconfig)
+        LOG.info("Starting PubNub")
+        # Start PubNubAsyncio
+        self.pn = PubNubAsyncio(PubnubConfig(subscribe_key, publish_key, user_id).get_config())
         if not self.pn:
+            # Something went wrong!
             LOG.critical("Invalid PubNub Configuration. Check your keys/user_id.")
             exit()
+        # Setup default listeners
+        if default_listeners:
+            self.__add_listeners()
+        # Add device manager for 'local' presence management
         self.device_manager = None
+        # Add PubNub http on request function callback
         self.on_request_callback = None
-        self.__add_listeners()
+        # Duplicate user_id as device_uuid for [future](link) PubNub support
         self.device_uuid = user_id  # Register device as current user_id by default
         LOG.info("Started PubNub")
 
@@ -31,11 +42,12 @@ class PubNubAsyncioManager():
         self.pn.add_listener(MySubscribeCallback())  # Add Subscribe Callback
         disconnect_listener = HandleDisconnectsCallback() # Create Disconnect Callback
         self.pn.add_listener(disconnect_listener) # Add Disconnect Callback
+    
+    def add_listener(self, listener):
+        self.pn.add_listener(listener)
 
-    # WARNING: NOT TESTED
-    # TODO: TEST
-    async def subscribe(self, channels):
-        return self.pn.subscribe().channels(channels).execute()
+    def subscribe(self, channels):
+        self.pn.subscribe().channels(channels).execute()
 
     # WARNING: NOT TESTED
     # TODO: TEST

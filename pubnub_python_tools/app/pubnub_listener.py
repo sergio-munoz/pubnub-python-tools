@@ -8,12 +8,15 @@ from ..logger.logging_config import get_logger
 LOG = get_logger()
 
 class MySubscribeCallback(SubscribeCallback):
-   
-    def __init__(self , device_manager=None):
+    def __init__(self, device_manager=None):
+        self._message = None
         # Add device_manager capabilities
         self.device_manager = device_manager
         self.on_request_callback = None
         self.device_uuid = None
+
+    def get_result(self):
+        return self._message
 
     def _add_get_callback(self, get_callback):
         """Function get callback"""
@@ -34,6 +37,13 @@ class MySubscribeCallback(SubscribeCallback):
         LOG.debug("Message payload: %s" % message.message)
         print("Message publisher: %s" % message.publisher)
         LOG.debug("Message publisher: %s" % message.publisher)
+        self._message = {
+            "channel": message.channel,
+            "subscription": message.subscription,
+            "timetoken": message.timetoken,
+            "payload": message.message,
+            "publisher": message.publisher
+        }
 
     def presence(self, pubnub, presence):
         # Can be join, leave, state-change, timeout, or interval
