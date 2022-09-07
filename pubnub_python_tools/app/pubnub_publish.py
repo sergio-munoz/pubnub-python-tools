@@ -14,3 +14,19 @@ def my_publish_callback(envelope, status):
         # Handle message publish error. Check 'category' property to find out possible issue
         # because of which request did fail.
         # Request can be resent using: [status retry];
+
+def my_publish_callback_asyncio(task):
+    # Check whether request successfully completed or not
+    if not task.exception():
+        envelope = task.result()
+        # Message successfully published to specified channel.
+        LOG.info("Message successfully published to specified channel.")
+        LOG.debug("publish timetoken: %d" % envelope.result.timetoken)
+        print("publish timetoken: %d" % envelope.result.timetoken)
+        print("Message successfully published to specified channel.")
+    else:
+        LOG.error("Message publish error exception unhabdled.")
+        print("Error publishing message.")
+        # Handle message publish error. Check 'category' property to find out possible issue
+        # because of which request did fail.
+        # Request can be resent using: [status retry];
