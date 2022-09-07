@@ -1,3 +1,6 @@
+# vim temp files
+*.swp
+
 # Python Virtual Environments
 venv/
 
