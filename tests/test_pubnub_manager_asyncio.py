@@ -10,7 +10,7 @@ from pubnub_python_tools.app.pubnub_listener import MySubscribeCallback
 from pubnub_python_tools.logger.logging_config import set_logger
 from pubnub_python_tools.config.module_config import SUBSCRIBE_KEY, PUBLISH_KEY
 
-LOG = set_logger("test_asyncio", DEBUG)  # Create a logger if needed. Default: INFO
+LOG = set_logger("test_pubnub_manager_asyncio", DEBUG)  # Create a logger if needed. Default: INFO
 
 def async_test(f):
     """Decorator to create asyncio context for asyncio methods or functions."""

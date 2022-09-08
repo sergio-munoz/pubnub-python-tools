@@ -16,9 +16,9 @@ class PubNubAsyncioManager():
         """Start PubNub Asyncio Manager
 
         Args:
-            subscribe_key (str, optional): Subscribe key for PubNub.
-            publish_key (str, optional): Publish key for PubNub.
-            user_id (str, optional): User ID or UUID for this PubNub instance.
+            subscribe_key (str): Subscribe key for PubNub.
+            publish_key (str): Publish key for PubNub.
+            user_id (str): User ID or UUID for this PubNub instance.
             default_listeners (bool, optional): Set to false to add your own listeners. Defaults to True.
         """
         # Check for None values
@@ -68,9 +68,9 @@ class PubNubAsyncioManager():
         """Subscribe to a channel indefinitely (blocking).
 
         Args:
-            channels (String|List|Tuple): Channel(s) to subscribe to.
-            channel_groups (String|List|Tuple, optional): Channel Group(s) to subscribe to.
-            timetoken (Int, optional): Subscribe with timetoken.
+            channels (srt|list|tuple): Channel(s) to subscribe to.
+            channel_groups (str|list|tuple, optional): Channel Group(s) to subscribe to.
+            timetoken (int, optional): Subscribe with timetoken.
             presence (bool, optional): Subscribe with presence. Defaults to False.
         """
         function_builder = self.pn.subscribe().channels(channels)
@@ -86,8 +86,8 @@ class PubNubAsyncioManager():
         """Publish a message to a channel async.
 
         Args:
-            channel (String): Channel to publish.
-            message (String): Message to publish.
+            channel (str): Channel to publish.
+            message (str): Message to publish.
 
         Returns:
             future: Asyncio future envelope.
@@ -112,9 +112,9 @@ class PubNubAsyncioManager():
         return await function_builder.future()
 
     def unsubscribe(self, channels):
-        """Unsubscribe to a channel. Sends leave event to presence.
+        """Unsubscribe from a channel. Sends leave event to presence.
 
         Args:
-            channels (String|List|Tuple): Channel(s) to unsubscribe from.
+            channels (str|list|tuple): Channel(s) to unsubscribe from.
         """
         self.pn.unsubscribe().channels(channels).execute()
