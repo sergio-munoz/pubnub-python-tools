@@ -22,6 +22,7 @@ class RunMainAppTests(TestCase):
 
         # Expect Content matches what we sent
         self.assertEqual(str(resp.content.decode()), "{\"Content\":\"Awesome bro!\"}")
+        #self.assertEqual(str(resp.content.decode()), str({'Content': 'Awesome bro!'}))
 
         # Expect status code to be 200 OK
         self.assertEqual(resp.status_code, 200)

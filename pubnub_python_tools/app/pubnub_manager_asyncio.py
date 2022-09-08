@@ -110,3 +110,11 @@ class PubNubAsyncioManager():
         if include_state:
             function_builder = function_builder.include_state(include_state)
         return await function_builder.future()
+
+    def unsubscribe(self, channels):
+        """Unsubscribe to a channel. Sends leave event to presence.
+
+        Args:
+            channels (String|List|Tuple): Channel(s) to unsubscribe from.
+        """
+        self.pn.unsubscribe().channels(channels).execute()

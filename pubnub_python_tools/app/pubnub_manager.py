@@ -1,6 +1,6 @@
-"""Manage PubNub"""
-import sys
-from ..logger.logging_config import get_logger
+"""Manage PubNub instance."""
+from pubnub.pubnub import PubNub
+
 from .pubnub_config import PubnubConfig
 from .pubnub_listener import MySubscribeCallback
 from .pubnub_handle_disconnects import HandleDisconnectsCallback
@@ -8,13 +8,13 @@ from .pubnub_publish import my_publish_callback
 from .pubnub_here_now_callback import here_now_callback
 from .device_manager import DeviceManager
 from .pubnub_on_request import get
-from pubnub.pubnub import PubNub
+from ..logger.logging_config import get_logger
 
-# Set Main Logger
-LOG = get_logger()
+LOG = get_logger()  # Get logger if needed. Default: INFO
 
 class PubNubManager():
-    # Start PubNub 
+    """Create a new PubNub instance."""
+
     def __init__(self, subscribe_key="", publish_key="", user_id=""):
         pnconfig = PubnubConfig(subscribe_key, publish_key, user_id).get_config()
         self.pn = PubNub(pnconfig)
@@ -80,6 +80,7 @@ class PubNubManager():
     def here_now(self, channels, include_uuids=True, include_state=False):
         """channels: String|List|Tuple
            include_uuids: Boolean
+           
         """
         function_builder = self.pn.here_now()
         if channels:

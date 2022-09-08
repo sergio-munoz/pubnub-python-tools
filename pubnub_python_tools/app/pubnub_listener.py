@@ -117,6 +117,7 @@ class MySubscribeCallback(SubscribeCallback):
                 or status.operation == PNOperationType.PNUnsubscribeOperation:
             if status.category == PNStatusCategory.PNConnectedCategory:
                 LOG.debug("This is expected for a subscribe, this means there is no error or issue whatsoever")
+                print("[HERE]Connected to channel")
                 # confirm channelId u.e555.u123 is in e.affectedChannels
                 # if !connected then use the fetch API to GET request URL
                 # set connected = true
@@ -166,20 +167,19 @@ class MySubscribeCallback(SubscribeCallback):
             else:
                 LOG.debug("Heartbeat operation was successful")
         else:
-            pass
             LOG.error("Encountered unknown status type")
 
     def signal(self, pubnub, signal):
         print("Signal channel: %s" % signal.channel)
-        LOG.debug("Signal channel: %s" % signal.channel)
-        print("Signal subscription: %s" % signal.subscription)
-        LOG.debug("Signal subscription: %s" % signal.subscription)
-        print("Signal timetoken: %s" % signal.timetoken)
-        LOG.debug("Signal timetoken: %s" % signal.timetoken)
+        LOG.debug("Signal channel: %s", signal.channel)
+        print("Signal subscription: %s", signal.subscription)
+        LOG.debug("Signal subscription: %s", signal.subscription)
+        print("Signal timetoken: %s", signal.timetoken)
+        LOG.debug("Signal timetoken: %s", signal.timetoken)
         print("Signal payload: %s" % signal.message)
-        LOG.debug("Signal payload: %s" % signal.message)
-        print("Signal publisher: %s" % signal.publisher)
-        LOG.debug("Signal publisher: %s" % signal.publisher)
+        LOG.debug("Signal payload: %s", signal.message)
+        print("Signal publisher: %s", signal.publisher)
+        LOG.debug("Signal publisher: %s", signal.publisher)
 
     def message_action(self, pubnub, message_action):
         print("Message action type: %s" % message_action.type)
