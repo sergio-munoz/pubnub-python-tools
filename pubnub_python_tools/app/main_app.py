@@ -1,6 +1,8 @@
 """Main app logic file."""
 import sys
+
 from . import pubnub_manager
+from . import pubnub_manager_asyncio
 from ..cli.v1 import get_parser
 from ..logger.logging_config import get_logger
 from ..config import module_config
@@ -12,10 +14,7 @@ def main(args=None):
     """Main function to interact with pubnub_python_tools.
 
     Args:
-        args (arguments): User arguments to parse.
-
-    Returns:
-        _type_: _description_
+        args: User arguments to parse. See cli/v1.py.
     """
     # Check if args were passed
     if not args:
@@ -29,7 +28,7 @@ def main(args=None):
     publish_key = module_config.PUBLISH_KEY
     user_id = module_config.USER_ID
 
-    # Override from CLI
+    # Override Environment variables from CLI
     if args.subscribe_key is not None:
         subscribe_key = args.subscribe_key
     if args.publish_key is not None:
@@ -37,19 +36,24 @@ def main(args=None):
     if args.uuid is not None:
         user_id = args.uuid
 
-    # Create PubNub Manager
-    pnmg = pubnub_manager.PubNubManager(subscribe_key, publish_key, user_id)
+    # Create PubNub instance
+    pnmg = None
+    if args.async_cmd:
+        # Create PubNub Async Manager
+        pnmg = pubnub_manager_asyncio.PubNubAsyncioManager(subscribe_key, publish_key, user_id)
+    else:
+        # Create PubNub Manager
+        pnmg = pubnub_manager.PubNubManager(subscribe_key, publish_key, user_id)
 
-    # Do commands from CLI
     # Local Device Manager
     if args.device_manager:
         pnmg.add_device_manager(args.device_manager)
 
         # Get function callback
-        if oc.ON_REQUEST_URL and oc.ON_REQUEST_PARAMS and oc.ON_REQUEST_BODY:
-            pnmg.add_on_request_get_callback(oc.ON_REQUEST_URL, oc.ON_REQUEST_PARAMS, oc.ON_REQUEST_BODY)
-        if user_id is not None:
-            pnmg.add_device_uuid(user_id)
+        #if oc.ON_REQUEST_URL and oc.ON_REQUEST_PARAMS and oc.ON_REQUEST_BODY:
+            #pnmg._add_on_request_get_callback(oc.ON_REQUEST_URL, oc.ON_REQUEST_PARAMS, oc.ON_REQUEST_BODY)
+        #if user_id is not None:
+            #pnmg.add_device_uuid(user_id)
 
     # Subscribe
     if args.subscribe:
@@ -62,7 +66,7 @@ def main(args=None):
             print(err_msg)
             LOG.error(err_msg)
             return
-        pnmg.publish_message(args.publish, args.message)
+        pnmg.publish(args.publish, args.message)
 
     # HereNow
     if args.here_now:

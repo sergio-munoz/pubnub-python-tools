@@ -1,22 +1,32 @@
 """Manage Devices locally in the client side with overlapping UUIDs."""
 from ..logger.logging_config import get_logger
 
-# Set Main Logger
-LOG = get_logger()
+LOG = get_logger()  # Get logger if needed. Default: INFO
 
 class DeviceManager():
-    
+    """Device Manager.
+    Locally keep track of connected devices.
+    """
+
     def __init__(self, db_location, on_request_callback=None, device_uuid=None):
+        """Start DeviceManager.
+
+        Args:
+            db_location (str): Uri db file location.
+            on_request_callback (function, optional): Add a on_request callback. Defaults to None.
+            device_uuid (str, optional): User ID or UUID. Defaults to None.
+        """
+        LOG.info("Starting Device Manager.")
         self.db_location = db_location # local file to persist data, can implement sql or else
         self.devices = set() # Unique elements only
         self.__parse_db_location_local_file()
         self.on_request_callback = on_request_callback
         self.device_uuid = device_uuid
-        LOG.info("Loaded local device manager")
+        LOG.info("Started Device Manager.")
 
     def __repr__(self):
-        """Device manager repr"""
-        return "DeviceManager: {} active devices".format(len(self.devices))
+        """Device manager repr."""
+        return f'DeviceManager: {len(self.devices)} active devices'
 
     def __read_local_file(self):
         """Read local file lines into readlines().
@@ -46,9 +56,9 @@ class DeviceManager():
             op = "w"
         with open (self.db_location, op) as f:
             f.writelines(f"{x}\n" for x in self.devices)
-        
 
     def __parse_db_location_local_file(self):
+        """Parse local file"""
         LOG.debug("Loading device manager file: %s", self.db_location)
         
         local_devices = self.__read_local_file() # Creates file if doesn't exist
@@ -76,7 +86,7 @@ class DeviceManager():
     def _add_on_request_callback(self, on_request_callback):
         """Add a on_request function callback"""
         self.on_request_callback = on_request_callback
-        LOG.debug("registered on_request_callback")
+        LOG.info("added on_request_callback.")
 
     def _add_device_uuid(self, device_uuid):
         """Add a on_request function callback"""
@@ -84,12 +94,24 @@ class DeviceManager():
         LOG.debug("registered device_uuid")
 
     def is_connected(self, user_id):
+        """Checks if the device is registered.
+
+        Args:
+            user_id (str): User ID or UUID.
+
+        Returns:
+            bool: Returns true if the device is on the Device Manager database.
+        """
         return user_id in self.devices
 
     def add_device(self, user_id):
         """Adding appends user to local set and writes to file.
-        user_id: UUID
-        returns: Bool True if device was added
+
+        Args:
+            user_id (str): User ID or UUID.
+
+        Returns:
+            bool: Returns true if the device was added to the Device Manager database.
         """
         # Check if user is connected
         if not self.is_connected(user_id):
@@ -102,8 +124,12 @@ class DeviceManager():
 
     def remove_device(self, user_id):
         """Removing deletes a user from local set and writes to file.
-        user_id: UUID
-        returns: Bool True if device was removed
+
+        Args:
+            user_id (str): User ID or UUID.
+
+        Returns:
+            bool: Returns true if the device was removed from the Device Manager database.
         """
         # Removing involves reading local file first to see if there were any changes and adding those
         # devices that we don't have into our devices.
@@ -118,7 +144,11 @@ class DeviceManager():
             return True
         LOG.debug("Device not in device list: %s", user_id)
         return False
-    
+
     def get_devices(self):
-        "Returns list of devices loaded in DeviceManager"
+        """Returns list of registered devices.
+
+        Returns:
+            list: devices loaded in the Device Manager database.
+        """
         return list(self.devices)

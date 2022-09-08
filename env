@@ -1,3 +1,3 @@
-pubnub_subscribe_key=mySubscribeKey
-pubnub_publish_key=myPublishKey
-pubnub_user_id=myUserUUID
+pn_subscribe_key=mySubscribeKey
+pn_publish_key=myPublishKey
+pn_user_id=myUserUUID

@@ -1,9 +1,9 @@
 """Configuaration for Device Manager."""
 import os
-from logging import INFO,DEBUG  # change it to DEBUG for more information
-try: 
+
+try:
     import dotenv
-except ImportError: 
+except ImportError:
     print("Warning: dotenv package not installed.")
     dotenv = None
 

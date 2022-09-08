@@ -48,7 +48,7 @@ class PubNubManager():
         # Add PubNub http on request function callback (optional)
         self.on_request_callback = None
 
-        LOG.info("Started PubNub")
+        LOG.info("Started PubNub instance.")
 
     def __add_default_listeners(self):
         """Add default callback listeners to instance.
@@ -65,7 +65,7 @@ class PubNubManager():
         """
         self.pn.add_listener(listener)
 
-    def _add_device_manager(self, device_manager_file_location):
+    def add_device_manager(self, device_manager_file_location):
         """Add Device Manager local presence capabilities.
 
         Args:
@@ -73,7 +73,7 @@ class PubNubManager():
         """
         self.device_manager = DeviceManager(device_manager_file_location)
 
-    def _add_on_request_get_callback(self, url, params, body):
+    def add_on_request_get_callback(self, url, params, body):
         """Add HTTP GET on_request callback.
 
         Args:

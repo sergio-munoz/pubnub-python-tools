@@ -17,6 +17,7 @@ parser.add_argument("-m", "--message", type=str, help="Message to publish")
 parser.add_argument("-us", "--unsubscribe", type=str, help="Unsubscribe from a Channel")
 parser.add_argument("-here", "--here-now", type=str, help="Here now on a Channel")
 parser.add_argument("-dm", "--dev-man", type=str, help="Attach a Device Manager to file")
+parser.add_argument("-a", "--async-cmd", type=str, help="Run command asynchronously using Asyncio")
 
 def get_parser(args):
     """Get argument parser
