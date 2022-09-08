@@ -10,6 +10,7 @@ cbor2==5.4.3
 certifi==2022.6.15
 charset-normalizer==2.1.0
 commonmark==0.9.1
+coverage==6.4.4
 dill==0.3.5.1
 docutils==0.19
 frozenlist==1.3.1
@@ -26,7 +27,6 @@ pep517==0.13.0
 pkginfo==1.8.3
 platformdirs==2.5.2
 pubnub==6.5.1
-pubnub_python_tools==0.2.1
 pycodestyle==2.9.1
 pycryptodomex==3.15.0
 Pygments==2.13.0
