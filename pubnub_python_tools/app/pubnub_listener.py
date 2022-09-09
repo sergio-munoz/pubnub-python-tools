@@ -9,6 +9,7 @@ from ..logger.logging_config import get_logger
 
 LOG = get_logger()
 
+
 class MySubscribeCallback(SubscribeCallback):
     """Create a Subscribe Callback."""
 

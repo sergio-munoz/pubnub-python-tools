@@ -4,5 +4,4 @@ import requests
 
 def get(url, params, json):
     """Get wrapper."""
-    return requests.get(url=url, params=params, json=json) 
-
+    return requests.get(url=url, params=params, json=json)

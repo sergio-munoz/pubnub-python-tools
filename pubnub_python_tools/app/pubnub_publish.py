@@ -3,6 +3,7 @@ from ..logger.logging_config import get_logger
 
 LOG = get_logger()  # Get logger if needed. Default: INFO
 
+
 def my_publish_callback(envelope, status):
     # Check whether request successfully completed or not
     if not status.is_error():
@@ -13,6 +14,7 @@ def my_publish_callback(envelope, status):
         # Handle message publish error. Check 'category' property to find out possible issue
         # because of which request did fail.
         # Request can be resent using: [status retry];
+
 
 def my_publish_callback_asyncio(task):
     # Check whether request successfully completed or not
@@ -25,6 +27,6 @@ def my_publish_callback_asyncio(task):
     else:
         LOG.error("Message publish error exception unhandled.")
         print("Error publishing message.")
-        # Handle message publish error. Check 'category' property to find out possible issue
+        # Handle message publish error. Check 'category' property to find out issue
         # because of which request did fail.
         # Request can be resent using: [status retry];

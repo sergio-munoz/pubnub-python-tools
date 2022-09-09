@@ -3,6 +3,7 @@ from ..logger.logging_config import get_logger
 
 LOG = get_logger()
 
+
 def here_now_callback(result, status):
     """here_now function callback resolver.
 

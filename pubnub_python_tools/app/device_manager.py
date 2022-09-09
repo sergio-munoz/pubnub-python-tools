@@ -3,6 +3,7 @@ from ..logger.logging_config import get_logger
 
 LOG = get_logger()  # Get logger if needed. Default: INFO
 
+
 class DeviceManager():
     """Device Manager.
     Locally keep track of connected devices.
@@ -17,8 +18,8 @@ class DeviceManager():
             device_uuid (str, optional): User ID or UUID. Defaults to None.
         """
         LOG.info("Starting Device Manager.")
-        self.db_location = db_location # local file to persist data, can implement sql or else
-        self.devices = set() # Unique elements only
+        self.db_location = db_location  # local file to persist data, can implement sql or else
+        self.devices = set()  # Unique elements only
         self.__parse_db_location_local_file()
         self.on_request_callback = on_request_callback
         self.device_uuid = device_uuid
@@ -32,36 +33,37 @@ class DeviceManager():
         """Read local file lines into readlines().
         Returns: list of lines in file."""
         try:
-            with open (self.db_location, "r") as f:
+            with open(self.db_location, "r") as f:
                 lines = f.readlines()
                 return lines
-        except FileNotFoundError as e:
+        except FileNotFoundError:
             LOG.warning("File not found. Creating...")
             try:
-                with open (self.db_location, "w") as f:
+                with open(self.db_location, "w") as f:
                     return []  # Returns empty list
-            except Exception as e:
+            except Exception:
                 LOG.error("Error creating file")
-                return
+                return []
 
     def __write_local_file(self, append=False):
         """Write our local file as append.
         append: If true will append content instead of overwriting
-        NOTE: This might need some after cleaning of duplicates. The read is safe because it reads into a set.
+        NOTE: This might need some after cleaning of duplicates.
+        NOTE: The read is safe because it reads into a set.
         """
         # Verbose syntax to demonstrate operation
         if append:
             op = "a+"
         else:
             op = "w"
-        with open (self.db_location, op) as f:
+        with open(self.db_location, op) as f:
             f.writelines(f"{x}\n" for x in self.devices)
 
     def __parse_db_location_local_file(self):
         """Parse local file"""
         LOG.debug("Loading device manager file: %s", self.db_location)
         
-        local_devices = self.__read_local_file() # Creates file if doesn't exist
+        local_devices = self.__read_local_file()  # Creates file if doesn't exist
 
         # No devices in the file (empty)
         if local_devices is None:
@@ -74,14 +76,14 @@ class DeviceManager():
             return
 
         # Add found devices in file to our local devices set
-        for device in local_devices: # equivalent of: for lines in file
+        for device in local_devices:  # equivalent of: for lines in file
             if str(device) in self.devices:
                 LOG.warning("already on device list: %s" % device)
             else:
                 self.devices.add(str(device))
                 LOG.debug("device added: %s" % device)
 
-        LOG.info("Loaded %i devices in device manager file: %s", len(self.devices), self.db_location)
+        LOG.info("Loaded %i devices in db file: %s", len(self.devices), self.db_location)
 
     def _add_on_request_callback(self, on_request_callback):
         """Add a on_request function callback"""
@@ -131,7 +133,7 @@ class DeviceManager():
         Returns:
             bool: Returns true if the device was removed from the Device Manager database.
         """
-        # Removing involves reading local file first to see if there were any changes and adding those
+        # Removing involves reading local file first to see if there were any changes
         # devices that we don't have into our devices.
         # Then we remove the devices that we want and overwrite the file.
 

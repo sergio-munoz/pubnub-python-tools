@@ -3,11 +3,12 @@ from pubnub.pubnub_asyncio import PubNubAsyncio
 
 from .pubnub_config import PubnubConfig
 from .pubnub_listener import MySubscribeCallback
-from .pubnub_here_now_callback import here_now_callback  # TODO: refactor this
+# from .pubnub_here_now_callback import here_now_callback 
 from .pubnub_handle_disconnects import HandleDisconnectsCallback
 from ..logger.logging_config import get_logger
 
 LOG = get_logger()  # Get logger if needed. Default: INFO
+
 
 class PubNubAsyncioManager():
     """Create a new PubNub Asyncio instance."""

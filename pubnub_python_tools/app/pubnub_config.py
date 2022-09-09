@@ -1,15 +1,16 @@
 """Configuration file for pubnub."""
 from pubnub.pnconfiguration import PNConfiguration
 
-from ..config.module_config import SUBSCRIBE_KEY,PUBLISH_KEY,USER_ID
+from ..config.module_config import SUBSCRIBE_KEY, PUBLISH_KEY, USER_ID
 from ..logger.logging_config import get_logger
 
 LOG = get_logger()  # Get logger if needed. Default: INFO
 
+
 class PubnubConfig():
     """Custom pubnub configuration class."""
 
-    def __init__(self, subscribe_key=SUBSCRIBE_KEY, publish_key=PUBLISH_KEY, user_id=USER_ID) -> None:
+    def __init__(self, subscribe_key=SUBSCRIBE_KEY, publish_key=PUBLISH_KEY, user_id=USER_ID):
         """Start a custom PNConfiguration object.
 
         Args:
@@ -22,10 +23,10 @@ class PubnubConfig():
         self.user_id = user_id
         self.pnconfig = PNConfiguration()
         self.pnconfig.subscribe_key = subscribe_key
-        self.pnconfig.publish_key  = publish_key
+        self.pnconfig.publish_key = publish_key
         self.pnconfig.user_id = user_id
         LOG.debug("Pubnub Config: subscribe_key=%s,publish_key=%s,user_id=%s",
-            self.pnconfig.subscribe_key, self.pnconfig.publish_key, self.pnconfig.user_id)
+                  self.pnconfig.subscribe_key, self.pnconfig.publish_key, self.pnconfig.user_id)
 
     def get_config(self):
         """Get parsed pnconfig

@@ -4,12 +4,13 @@ from pubnub.pubnub import PubNub
 from .pubnub_config import PubnubConfig
 from .pubnub_listener import MySubscribeCallback
 from .pubnub_handle_disconnects import HandleDisconnectsCallback
-from .pubnub_publish import my_publish_callback
+from .pubnub_publish import my_publish_callback as pub_callback
 from .device_manager import DeviceManager
 from .pubnub_on_request import get
 from ..logger.logging_config import get_logger
 
 LOG = get_logger()  # Get logger if needed. Default: INFO
+
 
 class PubNubManager():
     """Create a new PubNub instance."""
@@ -21,7 +22,7 @@ class PubNubManager():
             subscribe_key (str): Subscribe key for PubNub.
             publish_key (str): Publish key for PubNub.
             user_id (str): User ID or UUID for this PubNub instance.
-            default_listeners (bool, optional): Set to false to add your own listeners. Defaults to True.
+            default_listeners (bool, opt): Set to false to add custom listeners. Defaults to True.
         """
         # Check for None values
         if not subscribe_key or not publish_key or not user_id:
@@ -86,7 +87,7 @@ class PubNubManager():
             LOG.info("Custom on_request_get_callback added.")
         else:
             LOG.warning("Add device manager first: add_device_uuid(self, device_uuid).")
-        #self.device_uuid = device_uuid
+        # self.device_uuid = device_uuid
 
     def subscribe(self, channels, channel_groups=None, timetoken=None, presence=False):
         """Subscribe to a channel indefinitely (blocking).
@@ -158,4 +159,4 @@ class PubNubManager():
         Returns:
             future: Asyncio future envelope.
         """
-        return await self.pn.publish().channel(channel).message(message).pn_async(my_publish_callback)
+        return await self.pn.publish().channel(channel).message(message).pn_async(pub_callback)

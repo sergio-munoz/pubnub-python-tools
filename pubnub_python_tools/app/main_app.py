@@ -6,9 +6,10 @@ from . import pubnub_manager_asyncio
 from ..cli.v1 import get_parser
 from ..logger.logging_config import get_logger
 from ..config import module_config
-from ..config import http_on_request_on_connect as oc
+# from ..config import http_on_request_on_connect as oc
 
-LOG = get_logger() # Get logger if needed. Default: INFO
+LOG = get_logger()  # Get logger if needed. Default: INFO
+
 
 def main(args=None):
     """Main function to interact with pubnub_python_tools.
@@ -49,11 +50,11 @@ def main(args=None):
     if args.device_manager:
         pnmg.add_device_manager(args.device_manager)
 
-        # Get function callback
-        #if oc.ON_REQUEST_URL and oc.ON_REQUEST_PARAMS and oc.ON_REQUEST_BODY:
-            #pnmg._add_on_request_get_callback(oc.ON_REQUEST_URL, oc.ON_REQUEST_PARAMS, oc.ON_REQUEST_BODY)
-        #if user_id is not None:
-            #pnmg.add_device_uuid(user_id)
+    # Get function callback
+    # if oc.ON_REQUEST_URL and oc.ON_REQUEST_PARAMS and oc.ON_REQUEST_BODY:
+    # pnmg._add_on_request_get_callback(oc.ON_REQUEST_URL, oc.ON_REQUEST_PARAMS, oc.ON_REQUEST_BODY)
+    # if user_id is not None:
+    # pnmg.add_device_uuid(user_id)
 
     # Subscribe
     if args.subscribe:

@@ -1,5 +1,6 @@
 """Configuration file for logging."""
 import logging
+
 from ..config.module_config import LOGGER_DIR,DEFAULT_LOGGER_NAME,LOGGER_LEVEL,LOGGER_FORMAT
 
 # Catchall
@@ -12,11 +13,11 @@ if not LOGGER_FORMAT:
 
 
 def get_logger(log_name=DEFAULT_LOGGER_NAME):
+    logger = logging.getLogger(log_name)
+    return logger
     """Get a configured logger.
     :param log_name: Name of the logger
     """
-    logger = logging.getLogger(log_name)
-    return logger
 
 # Create a simple logger in default directory "/Logger"
 def set_logger(log_name=DEFAULT_LOGGER_NAME, log_level=LOGGER_LEVEL, format=LOGGER_FORMAT):

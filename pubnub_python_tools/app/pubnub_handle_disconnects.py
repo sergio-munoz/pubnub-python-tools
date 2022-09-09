@@ -4,6 +4,7 @@ from ..logger.logging_config import get_logger
 
 LOG = get_logger()
 
+
 class HandleDisconnectsCallback(SubscribeCallback):
     def status(self, pubnub, status):
         if status.category == PNStatusCategory.PNUnexpectedDisconnectCategory:
