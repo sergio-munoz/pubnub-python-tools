@@ -17,6 +17,8 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    environment: testing_environment
+
     steps:
       - name: Display env variables
         run: env
