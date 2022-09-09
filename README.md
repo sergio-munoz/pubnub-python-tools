@@ -27,7 +27,7 @@ Run the install script with your PubNub api credentials:
 
 ```shell
 $ chmod +x ./scripts/install.sh
-$ ./scripts/install.sh $pn_subscribe_key $pn_publish_key $pn_user_id
+$ ./scripts/install.sh $PN_SUBSCRIBE_KEY $PN_PUBLISH_KEY $PN_USER_ID
 ```
 
 After, you can quickly run python cli commands to PubNub:
@@ -60,7 +60,7 @@ To run commands you need to setup your PubNub api keys.
 Manually set cli variables before each command:
 
 ```shell
--sk $pn_subscribe_key -pk $pn_publish_key -u $pn_user_id
+-sk $PN_SUBSCRIBE_KEY -pk $PN_PUBLISH_KEY -u $PN_USER_ID
 ```
 
 __CLI Args:__
@@ -86,9 +86,9 @@ A minimal `.env` file to work properly needs at least your PubNub's `subscribe k
 ```shell
 $ cat .env
 
-pn_subscribe_key=sub-xxx-xxx
-pn_publish_key=pub-xxx-xxx
-pn_user_id=UUID
+PN_SUBSCRIBE_KEY=sub-xxx-xxx
+PN_PUBLISH_KEY=pub-xxx-xxx
+PN_USER_ID=UUID
 ```
 
 > If you can't see your `.env` file try using `ls -la`
@@ -101,9 +101,9 @@ Override the global variables manually in file `pubnub_python_tools/config/modul
 
 ```python
 # OVERRIDE GLOBAL VARIABLES
-SUBSCRIBE_KEY = $pn_subscribe_key
-PUBLISH_KEY = $pn_publish_key
-USER_ID = $pn_user_id
+SUBSCRIBE_KEY = "pub-xxx-xxx"
+PUBLISH_KEY = "sub-xxx-xxx"
+USER_ID = "UUID"
 ```
 
 ## Usage
@@ -119,7 +119,7 @@ After setting your environment and credentials, run CLI commands using the file`
 
 Always set the UUID to uniquely identify the user or device that connects to PubNub. This UUID should be persisted, and should remain unchanged for the lifetime of the user or the device. Not setting the UUID can significantly impact your billing.
 
-> Remember to always set up your `UUID` with `-u`.
+> Remember to always set up your UUID `USER_ID` with `-u`.
 
 #### Subscribe
 

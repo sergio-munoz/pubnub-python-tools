@@ -1,3 +1,3 @@
-pn_subscribe_key=mySubscribeKey
-pn_publish_key=myPublishKey
-pn_user_id=myUserUUID
+PN_SUBSCRIBE_KEY=sub-xxx-xxx
+PN_PUBLISH_KEY=pub-xxx-xx
+PN_USER_ID=UUID
