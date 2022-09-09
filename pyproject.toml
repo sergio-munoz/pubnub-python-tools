@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pubnub_python_tools"
-version = "0.2.1"
+version = "v1.0.rc-2"
 authors = [{ name = "Sergio Munoz", email = "sergio.munoz@pubnub.com" }]
 description = "Quickly interact with PubNub Python SDK."
 readme = "README.md"
