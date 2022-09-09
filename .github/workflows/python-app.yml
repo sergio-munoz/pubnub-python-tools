@@ -19,6 +19,9 @@ jobs:
 
     environment: testing_environment
 
+    env:
+      PN_SUBSCRIBE_KEY: ${{ secrets.PN_SUBSCRIBE_KEY }}
+
     steps:
       - name: Display env variables
         run: env
