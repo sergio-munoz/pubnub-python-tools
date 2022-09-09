@@ -1,9 +1,9 @@
 # pubnub-python-tools
-[![ghlastcommit](https://img.shields.io/github/last-commit/sergio-munoz/pubnub-python-tools?style=flat-square)](https://img.shields.io/github/last-commit/sergio-munoz/pubnub-python-tools?style=flat-square)
+[![Python application](https://github.com/sergio-munoz/pubnub-python-tools/actions/workflows/python-app.yml/badge.svg)](https://github.com/sergio-munoz/pubnub-python-tools/actions/workflows/python-app.yml) [![Upload Python Package](https://github.com/sergio-munoz/pubnub-python-tools/actions/workflows/python-publish-testing.yml/badge.svg)](https://github.com/sergio-munoz/pubnub-python-tools/actions/workflows/python-publish-testing.yml) [![ghlastcommit](https://img.shields.io/github/last-commit/sergio-munoz/pubnub-python-tools?style=flat-square)](https://img.shields.io/github/last-commit/sergio-munoz/pubnub-python-tools?style=flat-square)
 
-Useful Tools for quickly interacting with PubNub using Python. 
-
+Quickly interact with PubNub using the Python SDK.
 ____
+
 ## Pre-requisites
 
 For MacOS use `homebrew` to install packages or the following [PubNub Ansible Role Python SDK](https://github.com/sergio-munoz/pubnub-ansible-role-python-sdk).
