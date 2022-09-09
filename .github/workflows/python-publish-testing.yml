@@ -20,6 +20,8 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    environment: testing_environment
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
