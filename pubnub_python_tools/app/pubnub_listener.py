@@ -118,7 +118,7 @@ class MySubscribeCallback(SubscribeCallback):
                 or status.operation == PNOperationType.PNUnsubscribeOperation:
             if status.category == PNStatusCategory.PNConnectedCategory:
                 LOG.debug("This is expected for a subscribe, this means there is no error or issue whatsoever")
-                print("[HERE]Connected to channel")
+                print("Got subscribed")
                 self._status = "PNConnectedCategory"
                 # confirm channelId u.e555.u123 is in e.affectedChannels
                 # if !connected then use the fetch API to GET request URL

@@ -4,9 +4,9 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pubnub_python_tools"
-version = "v1.0alpha1"
+version = "v1.0.rc-3"
 authors = [{ name = "Sergio Munoz", email = "sergio.munoz@pubnub.com" }]
-description = "Quickly interact with PubNub Python SDK."
+description = "Quickly interact with PubNub's Python SDK."
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.7"
