@@ -19,6 +19,7 @@ parser.add_argument("-here", "--here-now", type=str, help="Here now on a Channel
 parser.add_argument("-dm", "--dev-man", type=str, help="Attach a Device Manager to file")
 parser.add_argument("-a", "--async-cmd", type=str, help="Run command asynchronously using Asyncio")
 
+
 def get_parser(args):
     """Get argument parser
 
@@ -29,6 +30,7 @@ def get_parser(args):
         parser: parser with arguments parsed
     """
     return parser.parse_args(args)
+
 
 def create_parser():
     """Create argument parser

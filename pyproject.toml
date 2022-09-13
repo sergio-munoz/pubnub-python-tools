@@ -4,18 +4,85 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pubnub_python_tools"
-version = "v1.0.rc-3"
 authors = [{ name = "Sergio Munoz", email = "sergio.munoz@pubnub.com" }]
 description = "Quickly interact with PubNub's Python SDK."
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.7"
 classifiers = [
-  "Programming Language :: Python :: 3",
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: Implementation :: CPython",
 ]
+
+
+dependencies = [
+  "pubnub>=7.0.0",
+  "python-dotenv",
+  "click>=8.0.3",
+]
+dynamic = ["version"]
 
 [project.urls]
 "Homepage" = "https://github.com/sergio-munoz/pubnub-python-tools/"
 "Bug Tracker" = "https://github.com/sergio-munoz/pubnub-python-tools/issues"
+Documentation = "https://github.com/sergio-munoz/pubnub-python-tools#readme"
+Issues = "https://github.com/sergio-munoz/pubnub-python-tools/issues"
+Source = "https://github.com/sergio-munoz/pubnub-python-tools"
+
+[project.scripts]
+ppt = "pubnub_python_tools.cli.click:main"
+pubnub-pytools = "pubnub_python_tools.run:main"
+
+[tool.hatch.version]
+path = "src/pubnub_python_tools/__about__.py"
+
+
+[tool.hatch.envs.default]
+dependencies = [
+  "coverage[toml]",
+  #"pytest",
+  #"pytest-cov",
+]
+
+#[tool.hatch.build]
+#include = [
+    #"pubnub_python_tools/*.py",
+    #"tests/",
+#]
+#[tool.hatch.build.targets.wheel.hooks.mypyc]
+#dependencies = ["hatch-mypyc"]
+
+#[build.targets.wheel.hooks.mypyc]
+#include = ["/src/pubnub_python_tools"]
+#exclude = ["__main__.py"]
+
+[tool.hatch.envs.default.scripts]
+#cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=pubnub_pytools --cov=tests"
+#no-cov = "cov --no-cov"
+cov = "coverage run --omit tests/*,scripts/*  -m unittest"
+report = "coverage report"
+run = "pubnub-python-tools"
+
+[[tool.hatch.envs.test.matrix]]
+python = ["37", "38", "39", "310", "311"]
+
+[tool.coverage.run]
+branch = true
+parallel = true
+omit = [
+  "src/pubnub_python_tools/__about__.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
