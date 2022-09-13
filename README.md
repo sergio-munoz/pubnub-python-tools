@@ -5,38 +5,51 @@ Quickly interact with PubNub using the Python SDK.
 ____
 
 ## Pre-requisites
+------------------
 
-For MacOS use `homebrew` to install packages or the following [PubNub Ansible Role Python SDK](https://github.com/sergio-munoz/pubnub-ansible-role-python-sdk).
+For MacOS use `homebrew` to install packages or the following [PubNub Ansible Role Python SDK](https://github.com/sergio-munoz/pubnub-ansible-role-python-sd) that sets *everything* for you. 
 
 - python3
 - python-tk
 
-## Packaging
-
-Currently this is only uploaded in the testing repository version of `pypi` as this is not yet officially released. Check it out: [https://test.pypi.org/project/pubnub-python-tools/](https://test.pypi.org/project/pubnub-python-tools/)
+## Install
+--------
 
 ### Install using pip
 
+Currently this is only uploaded in the testing repository version of `pypi` as this is not yet officially released. Check it out: [https://test.pypi.org/project/pubnub-python-tools/](https://test.pypi.org/project/pubnub-python-tools/)
+
 ```shell
-python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps pubnub-python-tools
+$ python -m pip install -i https://test.pypi.org/simple/ pubnub-python-tools
 ```
 
-## TLDR;
+## Use
+----
 
-Run the install script with your PubNub api credentials:
+Run commands using the command: `pubnub-python-tools`
 
 ```shell
+$ pubnub-python-tools -s "Space01" -p "Space01" -m "Hello from MySpace01"
+```
+
+### Automatic Setup
+
+Clone and run the `install.sh` script with your PubNub api credentials:
+
+```shell
+$ git clone https://github.com/sergio-munoz/pubnub-python-tools
+$ cd pubnub-python-tools
 $ chmod +x ./scripts/install.sh
 $ ./scripts/install.sh $PN_SUBSCRIBE_KEY $PN_PUBLISH_KEY $PN_USER_ID
 ```
 
-After, you can quickly run python cli commands to PubNub:
+After, you can quickly run python cli commands to PubNub using the command: `pubnub-python-tools`:
 
 ```shell
-python3 ./scripts/run_pn.py -s "Space01" -p "Space01" -m "Hello world!"
+$ pubnub-python-tools -s "Space02" -p "Space02" -m "Hello from MySpace02"
 ```
 
-## Manual Setup
+### Manual Setup
 
 Setup a new python virtual environment and install packages in `requirements.txt`:
 
@@ -45,17 +58,19 @@ $ python3 -m venv venv
 $ source venv/bin/activate
 (venv) $ python -m pip install -r requirements.txt
 ```
-Run commands:
+
+Run commands using the script: `run_pn.py`:
 
 ```shell
 (venv) $ python ./scripts/run_pn.py --help
 ```
 
-### Set PubNub Credentials
+## Set PubNub Credentials
+-----
 
 To run commands you need to setup your PubNub api keys.
 
-#### Manually via CLI
+### Manually via CLI
 
 Manually set cli variables before each command:
 
@@ -69,7 +84,7 @@ __CLI Args:__
 * `-pk`, `--publish-key` - PubNub publish key.
 * `-u`, `--user-id` - User ID or UUID.
 
-#### Using an .env file
+### Using an .env file
 
 Create an `.env` file to avoid typing your credentials each time.
 
@@ -93,7 +108,7 @@ PN_USER_ID=UUID
 
 > If you can't see your `.env` file try using `ls -la`
 
-#### Overriding Global variables
+### Overriding Global variables
 
 __NOTE: It is not recommended to hard-code your credentials on this file due to security purposes.__
 
@@ -106,11 +121,10 @@ PUBLISH_KEY = "sub-xxx-xxx"
 USER_ID = "UUID"
 ```
 
-## Usage
+## Reference CLI Usage
+----
 
-### CLI
-
-After setting your environment and credentials, run CLI commands using the file`scripts/run_pn.py`:
+After setting your environment and credentials, run CLI commands using the file `scripts/run_pn.py`:
 
 ```shell
 (venv) $ cd scripts/
@@ -121,7 +135,7 @@ Always set the UUID to uniquely identify the user or device that connects to Pub
 
 > Remember to always set up your UUID `USER_ID` with `-u`.
 
-#### Subscribe
+### Subscribe
 
 Subscribe to a channel forever.
 
@@ -133,7 +147,7 @@ __CLI Args:__
 * `-sk`, `--subscribe-key` - PubNub subscribe key (or set in `.env`)
 * `-s`, `--subscribe` - PubNub subscribe channel name
 
-#### Publish
+### Publish
 
 Publish a message to a channel.
 
@@ -190,6 +204,8 @@ __CLI Args:__
 * `-us`, `--unsubscribe` - PubNub channel name to unsubscribe from
 
 ## Use Cases
+___
+
 ### Subscribe and Publish
 
 Because subscribe and publish happen so fast the subscribe might not be listening when the publish was made and thus it will not be shown, but it will be published, if other devices are listening, they will reflect the changes. This is classic pub/sub behavior.
@@ -209,6 +225,7 @@ Open another terminal and run that command modified to show that the user is sti
 Dig into the `logger/main_log.log` to see more information.
 
 ## Tests
+---
 
 ### Unit Tests
 
@@ -267,10 +284,20 @@ TOTAL                                                        776    186    76%
 ```
 
 ## Misc
+___
+
 ### Install to a Jupyter Notebook
 
 ```shell
 import sys
 !{sys.executable} -m pip install -U pubnub
 !{sys.executable} -m pip install -U --index-url https://test.pypi.org/simple/ --no-deps pubnub-python-tools
+```
+### Build
+
+This is mostly for developers. If you would like to build this tool you can use `hatch`:
+
+```
+$ hatch build
+$ pip install dist/pubnub_python_tools-${VERSION}.tar.gz
 ```
