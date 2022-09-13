@@ -20,6 +20,10 @@ def main(args=None):
     # Check if args were passed
     if not args:
         args = sys.argv[1:]  # Obtain from cli
+        # No parameter args sent. Try system argv
+        if len(args) <= 0:
+            print("No args detected. Read help: pubnub-pytools --help ")
+            sys.exit()
     # Parse arguments
     args = get_parser(args)
     LOG.debug("Parsed arguments: %s", args)
@@ -47,7 +51,7 @@ def main(args=None):
         pnmg = pubnub_manager.PubNubManager(subscribe_key, publish_key, user_id)
 
     # Local Device Manager
-    if args.device_manager:
+    if args.dev_man:
         pnmg.add_device_manager(args.device_manager)
 
     # Get function callback
