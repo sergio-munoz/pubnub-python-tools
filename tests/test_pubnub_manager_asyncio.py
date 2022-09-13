@@ -1,16 +1,17 @@
 """Unittest file for pubnub_manager_asyncio.py."""
 import asyncio
 
-from functools import wraps
-from logging import DEBUG
 from unittest import TestCase
+from logging import DEBUG
+from functools import wraps
 
-from pubnub_python_tools.app import pubnub_manager_asyncio as pma
-from pubnub_python_tools.app.pubnub_listener import MySubscribeCallback
-from pubnub_python_tools.logger.logging_config import set_logger
-from pubnub_python_tools.config.module_config import SUBSCRIBE_KEY, PUBLISH_KEY
+from src.pubnub_python_tools.logger.logging_config import set_logger
+from src.pubnub_python_tools.config.module_config import SUBSCRIBE_KEY, PUBLISH_KEY
+from src.pubnub_python_tools.app.pubnub_listener import MySubscribeCallback
+from src.pubnub_python_tools.app import pubnub_manager_asyncio as pma
 
 LOG = set_logger("test_pubnub_manager_asyncio", DEBUG)  # Create a logger if needed. Default: INFO
+
 
 def async_test(f):
     """Decorator to create asyncio context for asyncio methods or functions."""
@@ -18,6 +19,7 @@ def async_test(f):
     def g(*args, **kwargs):
         args[0].loop.run_until_complete(f(*args, **kwargs))
     return g
+
 
 class TestPubNubAsyncioManager(TestCase):
     """Test PubNubAsyncioManager."""

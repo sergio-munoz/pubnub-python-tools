@@ -1,11 +1,12 @@
 """Test file for request_function.py."""
-from pubnub_python_tools.app.pubnub_on_request import get
-from pubnub_python_tools.logger.logging_config import set_logger
 from unittest import TestCase
-
-# Create a logger if needed for testing cases
 from logging import DEBUG
-LOG = set_logger("test_request_function", DEBUG)  # Defaults as INFO
+
+from src.pubnub_python_tools.logger.logging_config import set_logger
+from src.pubnub_python_tools.app.pubnub_on_request import get
+
+LOG = set_logger("test_request_function", DEBUG)  # Create a logger if needed. 
+
 
 class RunMainAppTests(TestCase):
 
@@ -22,7 +23,7 @@ class RunMainAppTests(TestCase):
 
         # Expect Content matches what we sent
         self.assertEqual(str(resp.content.decode()), "{\"Content\":\"Awesome bro!\"}")
-        #self.assertEqual(str(resp.content.decode()), str({'Content': 'Awesome bro!'}))
+        # self.assertEqual(str(resp.content.decode()), str({'Content': 'Awesome bro!'}))
 
         # Expect status code to be 200 OK
         self.assertEqual(resp.status_code, 200)

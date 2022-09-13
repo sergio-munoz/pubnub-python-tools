@@ -5,16 +5,16 @@ import time
 from logging import DEBUG
 from unittest import TestCase
 
-from pubnub_python_tools.app import pubnub_manager as pm
-from pubnub_python_tools.app.pubnub_listener import MySubscribeCallback
-from pubnub_python_tools.app.pubnub_here_now_callback import here_now_callback
-from pubnub_python_tools.logger.logging_config import set_logger
-from pubnub_python_tools.config.module_config import SUBSCRIBE_KEY, PUBLISH_KEY
+from src.pubnub_python_tools.logger.logging_config import set_logger
+from src.pubnub_python_tools.config.module_config import SUBSCRIBE_KEY, PUBLISH_KEY
+from src.pubnub_python_tools.app.pubnub_listener import MySubscribeCallback
+from src.pubnub_python_tools.app import pubnub_manager as pm
 
 LOG = set_logger("test_pubnub_manager", DEBUG)  # Create a logger if needed. Default: INFO
 
 # Global test folder
 TEST_FOLDER = str(os.path.dirname(os.path.abspath(__file__)))
+
 
 class TestPubNubManager(TestCase):
     """Test PubNubManager."""

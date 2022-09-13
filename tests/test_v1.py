@@ -2,10 +2,11 @@
 from logging import DEBUG
 from unittest import TestCase
 
-from pubnub_python_tools.cli.v1 import get_parser, create_parser
-from pubnub_python_tools.logger.logging_config import set_logger
+from src.pubnub_python_tools.cli.v1 import get_parser, create_parser
+from src.pubnub_python_tools.logger.logging_config import set_logger
 
 LOG = set_logger("test_v1", DEBUG)  # Create a logger if needed. Default: INFO
+
 
 class TestCliV1(TestCase):
     """Test cli/v1.py

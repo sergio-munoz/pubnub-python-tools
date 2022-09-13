@@ -37,8 +37,8 @@ Issues = "https://github.com/sergio-munoz/pubnub-python-tools/issues"
 Source = "https://github.com/sergio-munoz/pubnub-python-tools"
 
 [project.scripts]
-ppt = "pubnub_python_tools.cli.click:main"
-pubnub-pytools = "pubnub_python_tools.run:main"
+#ppt = "pubnub_python_tools.cli.click:main"
+pubnub-python-tools = "pubnub_python_tools.run:main"
 
 [tool.hatch.version]
 path = "src/pubnub_python_tools/__about__.py"
@@ -68,7 +68,7 @@ dependencies = [
 #no-cov = "cov --no-cov"
 cov = "coverage run --omit tests/*,scripts/*  -m unittest"
 report = "coverage report"
-run = "pubnub-python-tools"
+pubnub-python-tools = "pubnub_python_tools.run:main"
 
 [[tool.hatch.envs.test.matrix]]
 python = ["37", "38", "39", "310", "311"]

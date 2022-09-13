@@ -4,14 +4,14 @@ import os
 from logging import DEBUG
 from unittest import TestCase
 
-from pubnub_python_tools.app import device_manager
-from pubnub_python_tools.logger.logging_config import set_logger
+from src.pubnub_python_tools.app import device_manager
+from src.pubnub_python_tools.logger.logging_config import set_logger
 
-
-LOG = set_logger("test_device_manager", DEBUG) # Create a logger if needed. Default: INFO
+LOG = set_logger("test_device_manager", DEBUG)  # Create a logger if needed. Default: INFO
 
 # Global test folder
 TEST_FOLDER = str(os.path.dirname(os.path.abspath(__file__)))
+
 
 class TestDeviceManager(TestCase):
     """Test DeviceManager."""
