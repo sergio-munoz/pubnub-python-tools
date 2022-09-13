@@ -9,6 +9,8 @@
 name: Upload Python Package
 
 on:
+  push:
+    branches: [ "main" ]
   release:
     types: [published]
 
@@ -31,9 +33,9 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install build
-    - name: Build package
-      run: python -m build
+        pip install hatch
+    - name: Build package with hatch
+      run: python -m hatch build
     - name: Publish package to TestPypI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
