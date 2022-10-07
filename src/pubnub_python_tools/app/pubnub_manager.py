@@ -4,7 +4,9 @@ from pubnub.pubnub import PubNub
 from .pubnub_config import PubnubConfig
 from .pubnub_listener import MySubscribeCallback
 from .pubnub_handle_disconnects import HandleDisconnectsCallback
+from .pubnub_here_now_callback import here_now_callback
 from .pubnub_publish import my_publish_callback as pub_callback
+from .pubnub_unsubscribe_envelope import HandleUnsubscribeCallback
 from .device_manager import DeviceManager
 from .pubnub_on_request import get
 from ..logger.logging_config import get_logger
@@ -12,10 +14,32 @@ from ..logger.logging_config import get_logger
 LOG = get_logger()  # Get logger if needed. Default: INFO
 
 
-class PubNubManager():
+class PubNubAnalytics:
+    def __init__(self):
+        self.tx_count = 0
+        self.metrics = {"publish": 0, "subscribe": 0, "here_now": 0, "unsubscribe": 0}
+
+    def incr(self, metric):
+        if metric not in self.metrics:
+            LOG.error("unknown metric: ", metric)
+            return
+        # Increment metric by 1
+        self.metrics[metric] += 1
+
+    def decr(self, metric):
+        if metric not in self.metrics:
+            LOG.error("unknown metric: ", metric)
+            return
+        # Decrement metric by 1
+        self.metrics[metric] -= 1
+
+
+class PubNubManager:
     """Create a new PubNub instance."""
 
-    def __init__(self, subscribe_key=None, publish_key=None, user_id=None, default_listeners=True):
+    def __init__(
+        self, subscribe_key=None, publish_key=None, user_id=None, default_listeners=True
+    ):
         """Start PubNub Manager
 
         Args:
@@ -29,7 +53,7 @@ class PubNubManager():
             LOG.critical("Missing credentials/uuid for PubNub Configuration.")
             exit()
 
-        # Start PubNubAsyncio
+        # Start PubNub Manager
         LOG.info("Starting PubNub instance.")
         self.pn = PubNub(PubnubConfig(subscribe_key, publish_key, user_id).get_config())
         if not self.pn:
@@ -52,11 +76,11 @@ class PubNubManager():
         LOG.info("Started PubNub instance.")
 
     def __add_default_listeners(self):
-        """Add default callback listeners to instance.
-        """
-        self.pn.add_listener(MySubscribeCallback()) # Add Listener Callback
-        disconnect_listener = HandleDisconnectsCallback() # Create Disconnect Callback
-        self.pn.add_listener(disconnect_listener) # Add Disconnect Callback
+        """Add default callback listeners to instance."""
+        self.pn.add_listener(MySubscribeCallback())  # Add Listener Callback
+        disconnect_listener = HandleDisconnectsCallback()  # Create Disconnect Callback
+        self.pn.add_listener(disconnect_listener)  # Add Disconnect Callback
+        self.pn.add_listener(HandleUnsubscribeCallback())  # Add Unsubscribe Callback
 
     def _add_listener(self, listener):
         """Manually add a callback listener to instance.
@@ -120,7 +144,7 @@ class PubNubManager():
         return self.pn.publish().channel(channel).message(message).sync()
 
     def here_now(self, channels, include_uuids=True, include_state=False):
-        """HereNow call on a channel.
+        """HereNow call on a channel. This is an async call.
 
         Args:
             channels (str|list|tuple): Channel(s) to call here_now.
@@ -132,7 +156,7 @@ class PubNubManager():
             function_builder = function_builder.include_uuids(include_uuids)
         if include_state:
             function_builder = function_builder.include_state(include_state)
-        return function_builder.sync()
+        return function_builder
 
     def unsubscribe(self, channels, channel_groups=None):
         """Unsubscribe from a channel. Sends leave event to presence.
@@ -159,4 +183,9 @@ class PubNubManager():
         Returns:
             future: Asyncio future envelope.
         """
-        return await self.pn.publish().channel(channel).message(message).pn_async(pub_callback)
+        return (
+            await self.pn.publish()
+            .channel(channel)
+            .message(message)
+            .pn_async(pub_callback)
+        )
