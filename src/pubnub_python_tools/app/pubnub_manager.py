@@ -4,7 +4,7 @@ from pubnub.pubnub import PubNub
 from .pubnub_config import PubnubConfig
 from .pubnub_listener import MySubscribeCallback
 from .pubnub_handle_disconnects import HandleDisconnectsCallback
-from .pubnub_here_now_callback import here_now_callback
+from .pubnub_here_now_callback import HereNowCallback 
 from .pubnub_publish import my_publish_callback as pub_callback
 from .pubnub_unsubscribe_envelope import HandleUnsubscribeCallback
 from .device_manager import DeviceManager
@@ -77,10 +77,9 @@ class PubNubManager:
 
     def __add_default_listeners(self):
         """Add default callback listeners to instance."""
-        self.pn.add_listener(MySubscribeCallback())  # Add Listener Callback
+        self.pn.add_listener(MySubscribeCallback())        # Add MySubscribe Callback
         disconnect_listener = HandleDisconnectsCallback()  # Create Disconnect Callback
-        self.pn.add_listener(disconnect_listener)  # Add Disconnect Callback
-        self.pn.add_listener(HandleUnsubscribeCallback())  # Add Unsubscribe Callback
+        self.pn.add_listener(disconnect_listener)          # Add Disconnect Callback
 
     def _add_listener(self, listener):
         """Manually add a callback listener to instance.
@@ -143,7 +142,7 @@ class PubNubManager:
         """
         return self.pn.publish().channel(channel).message(message).sync()
 
-    def here_now(self, channels, include_uuids=True, include_state=False):
+    def here_now(self, channels, include_uuids=True, include_state=False, override_listener=None):
         """HereNow call on a channel. This is an async call.
 
         Args:
@@ -156,7 +155,11 @@ class PubNubManager:
             function_builder = function_builder.include_uuids(include_uuids)
         if include_state:
             function_builder = function_builder.include_state(include_state)
-        return function_builder
+        if override_listener:
+            # Expecting a here_now_callback
+            return function_builder.pn_async(override_listener)
+        hnc = HereNowCallback()
+        return function_builder.pn_async(hnc.here_now_callback)
 
     def unsubscribe(self, channels, channel_groups=None):
         """Unsubscribe from a channel. Sends leave event to presence.

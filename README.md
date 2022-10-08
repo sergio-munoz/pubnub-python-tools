@@ -2,10 +2,9 @@
 [![Python application](https://github.com/sergio-munoz/pubnub-python-tools/actions/workflows/python-app.yml/badge.svg)](https://github.com/sergio-munoz/pubnub-python-tools/actions/workflows/python-app.yml) [![Upload Python Package](https://github.com/sergio-munoz/pubnub-python-tools/actions/workflows/python-publish-testing.yml/badge.svg)](https://github.com/sergio-munoz/pubnub-python-tools/actions/workflows/python-publish-testing.yml) [![ghlastcommit](https://img.shields.io/github/last-commit/sergio-munoz/pubnub-python-tools?style=flat-square)](https://img.shields.io/github/last-commit/sergio-munoz/pubnub-python-tools?style=flat-square)
 
 Quickly interact with PubNub using the Python SDK.
-____
 
 ## Pre-requisites
-------------------
+-----------------
 
 For MacOS use `homebrew` to install packages or the following [PubNub Ansible Role Python SDK](https://github.com/sergio-munoz/pubnub-ansible-role-python-sd) that sets *everything* for you. 
 
@@ -13,82 +12,77 @@ For MacOS use `homebrew` to install packages or the following [PubNub Ansible Ro
 - python-tk
 
 ## Install
---------
+----------
+
+To install `pubnub-python-tools`:
 
 ### Install using pip
 
-Currently this is only uploaded in the testing repository version of `pypi` as this is not yet officially released. Check it out: [https://test.pypi.org/project/pubnub-python-tools/](https://test.pypi.org/project/pubnub-python-tools/)
+> This is only uploaded in the testing repository version of `pypi` as this is not yet officially released. Check it out: [https://test.pypi.org/project/pubnub-python-tools/](https://test.pypi.org/project/pubnub-python-tools/)
+
+To install the latest managed packaged version:
 
 ```shell
 $ python -m pip install -i https://test.pypi.org/simple/ pubnub-python-tools
 ```
 
-## Use
-----
+### Automatic build and install
 
-Run commands using the command: `pubnub-python-tools`
+> It is recommended to setup a [virtual environment]().
 
-```shell
-$ pubnub-python-tools -s "Space01" -p "Space01" -m "Hello from MySpace01"
-```
-
-### Automatic Setup
-
-Clone and run the `install.sh` script with your PubNub api credentials:
+To install locally the latest git version:
 
 ```shell
 $ git clone https://github.com/sergio-munoz/pubnub-python-tools
-$ cd pubnub-python-tools
-$ chmod +x ./scripts/install.sh
+$ ./scripts/build_install.sh
+```
+
+> Set script permissions with `chmod +x`
+
+### Manually build and install
+
+Setup a new python virtual environment and install packages in `requirements_build.txt`:
+
+```shell
+$ python3 -m venv build_venv
+$ source build_venv/bin/activate
+(build_venv) $ pip install -r build_requirements.txt
+(build_venv) $ hatch build
+(build_venv) $ pip install dist/pubnub_python_tools-${VERSION}.tar.gz
+```
+
+### Install into a Jupyter Notebook
+
+To install the latest testing repository version into the Jupyter Notebook kernel:
+
+```shell
+import sys
+!{sys.executable} -m pip install -U pubnub
+!{sys.executable} -m pip install -U --index-url https://test.pypi.org/simple/ --no-deps pubnub-python-tools
+```
+
+## PubNub Auth Settings
+-----------------------
+
+> Always set the UUID (USER_ID) to uniquely identify the user or device that connects to PubNub. This UUID should be persisted, and should remain unchanged for the lifetime of the user or the device. Not setting the UUID can significantly impact your billing.
+
+To run `pubnub` commands you need to setup your PubNub credentials using any of the following ways:
+
+### Automatically
+
+Run the `setup.sh` script with your PubNub subscribe key, publish key and user_id:
+
+```shell
 $ ./scripts/install.sh $PN_SUBSCRIBE_KEY $PN_PUBLISH_KEY $PN_USER_ID
 ```
 
-After, you can quickly run python cli commands to PubNub using the command: `pubnub-python-tools`:
-
-```shell
-$ pubnub-python-tools -s "Space02" -p "Space02" -m "Hello from MySpace02"
-```
-
-### Manual Setup
-
-Setup a new python virtual environment and install packages in `requirements.txt`:
-
-```shell
-$ python3 -m venv venv
-$ source venv/bin/activate
-(venv) $ python -m pip install -r requirements.txt
-```
-
-Run commands using the script: `run_pn.py`:
-
-```shell
-(venv) $ python ./scripts/run_pn.py --help
-```
-
-## Set PubNub Credentials
------
-
-To run commands you need to setup your PubNub api keys.
-
-### Manually via CLI
-
-Manually set cli variables before each command:
-
-```shell
--sk $PN_SUBSCRIBE_KEY -pk $PN_PUBLISH_KEY -u $PN_USER_ID
-```
-
-__CLI Args:__
-
-* `-sk`, `--subscribe-key` - PubNub subscribe key.
-* `-pk`, `--publish-key` - PubNub publish key.
-* `-u`, `--user-id` - User ID or UUID.
-
 ### Using an .env file
 
-Create an `.env` file to avoid typing your credentials each time.
+> Requires [python-dotenv](https://pypi.org/project/python-dotenv/). Install using: `pip install python-dotenv`
 
-> Requires [python-dotenv](https://pypi.org/project/python-dotenv/). Install with `pip install python-dotenv`
+> If you can't see your `.env` file try using: `ls -la`
+
+Create an `.env` file to avoid typing your credentials each time.
 
 Copy the env file sample `env` file into your own `.env` (watch the dot `'.'`) file and replace with your PubNub keys.
 
@@ -106,11 +100,27 @@ PN_PUBLISH_KEY=pub-xxx-xxx
 PN_USER_ID=UUID
 ```
 
-> If you can't see your `.env` file try using `ls -la`
+### Manually via CLI
+
+> This has the highest precedence
+
+Manually set cli variables before each command:
+
+```shell
+-sk $PN_SUBSCRIBE_KEY -pk $PN_PUBLISH_KEY -u $PN_USER_ID
+```
+
+__CLI Args:__
+
+* `-sk`, `--subscribe-key` - PubNub subscribe key.
+* `-pk`, `--publish-key` - PubNub publish key.
+* `-u`, `--user-id` - User ID (UUID).
 
 ### Overriding Global variables
 
-__NOTE: It is not recommended to hard-code your credentials on this file due to security purposes.__
+> This has the lowest precedence
+
+__NOTE: It is not recommended to hard-code your credentials due to security purposes.__
 
 Override the global variables manually in file `pubnub_python_tools/config/module_config.py`:
 
@@ -121,17 +131,30 @@ PUBLISH_KEY = "sub-xxx-xxx"
 USER_ID = "UUID"
 ```
 
-## Reference CLI Usage
-----
+## Sample Use
+-------------
 
-After setting your environment and credentials, run CLI commands using the file `scripts/run_pn.py`:
+Run PubNub using the script: `run_pn.py`. 
 
 ```shell
-(venv) $ cd scripts/
-(venv) $ python run_pn.py -h
+$ python ./scripts/run_pn.py -s "Space01" -p "Space01" -m "Hello from MySpace01"
 ```
 
-Always set the UUID to uniquely identify the user or device that connects to PubNub. This UUID should be persisted, and should remain unchanged for the lifetime of the user or the device. Not setting the UUID can significantly impact your billing.
+Or if installed, run PubNub using the command: `pubnub-python-tools`.
+
+```shell
+$ pubnub-python-tools -s "Space01" -p "Space01" -m "Hello from MySpace01"
+```
+
+Get help using the `--help` flag.
+
+```shell
+$ python ./scripts/run_pn.py --help
+$ pubnub-python-tools --help
+```
+
+## CLI Usage Reference
+----------------------
 
 > Remember to always set up your UUID `USER_ID` with `-u`.
 
@@ -281,23 +304,4 @@ tests/test_request_function.py                                15      0   100%
 tests/test_v1.py                                              32      0   100%
 ------------------------------------------------------------------------------
 TOTAL                                                        776    186    76%
-```
-
-## Misc
-___
-
-### Install to a Jupyter Notebook
-
-```shell
-import sys
-!{sys.executable} -m pip install -U pubnub
-!{sys.executable} -m pip install -U --index-url https://test.pypi.org/simple/ --no-deps pubnub-python-tools
-```
-### Build
-
-This is mostly for developers. If you would like to build this tool you can use `hatch`:
-
-```
-$ hatch build
-$ pip install dist/pubnub_python_tools-${VERSION}.tar.gz
 ```

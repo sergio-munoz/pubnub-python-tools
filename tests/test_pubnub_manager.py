@@ -5,11 +5,10 @@ import time
 from logging import DEBUG
 from unittest import TestCase
 
-# from pubnub_python_tools.app.pubnub_here_now_callback import here_now_callback
-
 from src.pubnub_python_tools.logger.logging_config import set_logger
 from src.pubnub_python_tools.config.module_config import SUBSCRIBE_KEY, PUBLISH_KEY
 from src.pubnub_python_tools.app.pubnub_listener import MySubscribeCallback
+from src.pubnub_python_tools.app.pubnub_here_now_callback import HereNowCallback
 from src.pubnub_python_tools.app import pubnub_manager as pm
 
 LOG = set_logger(
@@ -23,7 +22,7 @@ TEST_FOLDER = str(os.path.dirname(os.path.abspath(__file__)))
 class TestPubNubManager(TestCase):
     """Test PubNubManager."""
 
-    # NOTE: For more detauled comments see test_pubnub_manager_asyncio.py
+    # NOTE: For more detailed comments see test_pubnub_manager_asyncio.py
 
     def setUp(self):
         """setUp PubNub instance."""
@@ -136,93 +135,45 @@ class TestPubNubManager(TestCase):
         self.server.unsubscribe(self.channel)
         time.sleep(1)
 
-        class HNC:
-            def __init__(self):
-                self.channel_data = None
-                self.num_channels = 0
-                self.channel_name = ""
-                self.occupancy = ""
-                self.occupants = ""
+        # Create HereNowCallback
+        hnc = HereNowCallback()
 
-            def __repr__(self):
-                return str(
-                    {
-                        "num_channels": str(self.num_channels),
-                        "channel_name": self.channel_name,
-                        "occupancy": str(self.occupancy),
-                        "occupants": self.occupants,
-                    }
-                )
-
-            def get_channel_data(self):
-                return self.channel_data
-
-            def override_here_now_callback(self, result, status):
-                if status.is_error():
-                    # handle error
-                    print("Status is error: ", str(status))
-                    return
-
-                self.channel_data = [i for i in result.channels]
-                self.num_channels = len(result.channels)
-                for channel_data in result.channels:
-                    print("---")
-                    print("channel: %s" % channel_data.channel_name)
-                    print("occupancy: %s" % channel_data.occupancy)
-                    print("occupants: %s" % channel_data.occupants)
-                    self.channel_data = (
-                        self.channel_data + "," + channel_data.channel_name
-                    )
-                    self.occupancy = channel_data.occupancy
-                    self.occupants = channel_data.occupants
-                for occupant in channel_data.occupants:
-                    print("uuid: %s, state: %s" % (occupant.uuid, occupant.state))
-
-        hnc = HNC()
-
-        # Call here_now
-        self.server.here_now(self.channel).pn_async(hnc.override_here_now_callback)
+        # Call here_now with override_listener
+        self.server.here_now(self.channel, override_listener=hnc.here_now_callback)
         time.sleep(5)
-        print(hnc)
-        channel_data = hnc.get_channel_data()
-        print("herenow channel_data: ", channel_data)
 
         LOG.info(hnc)
         self.assertEqual(
             hnc.__repr__(),
             str(
                 {
-                    "num_channels": "1",
-                    "channel_name": "",
-                    "occupancy": "",
-                    "occupants": "",
+                    "here_now_channels": ["test.channel"],
+                    "here_now_occupancy": [0],
+                    "here_now_uuids": [],
+                    "here_now_states": [],
                 }
             ),
         )
 
         # Test with one subscribe
-        occupancy = 1
-        num_channels = 1
         self.server.unsubscribe(self.channel)
         time.sleep(1)
         self.server.subscribe(self.channel, presence=True)
         time.sleep(4)
 
         # Call here_now
-        self.server.here_now(self.channel).pn_async(hnc.override_here_now_callback)
+        self.server.here_now(self.channel, override_listener=hnc.here_now_callback)
         time.sleep(3)
-        channel_data = hnc.get_channel_data
-        LOG.info(channel_data)
 
         LOG.info(hnc)
         self.assertEqual(
             hnc.__repr__(),
             str(
                 {
-                    "num_channels": str(num_channels),
-                    "channel_name": "",
-                    "occupancy": "",
-                    "occupants": "",
+                    "here_now_channels": ["test.channel"],
+                    "here_now_occupancy": [1],
+                    "here_now_uuids": ['UUID'],
+                    "here_now_states": [None],
                 }
             ),
         )
