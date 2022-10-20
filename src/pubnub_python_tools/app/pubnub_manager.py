@@ -1,12 +1,12 @@
 """Manage PubNub instance."""
 from pubnub.pubnub import PubNub
+from pubnub.exceptions import PubNubException
 
 from .pubnub_config import PubnubConfig
 from .pubnub_listener import MySubscribeCallback
 from .pubnub_handle_disconnects import HandleDisconnectsCallback
-from .pubnub_here_now_callback import HereNowCallback 
+from .pubnub_here_now_callback import HereNowCallback
 from .pubnub_publish import my_publish_callback as pub_callback
-from .pubnub_unsubscribe_envelope import HandleUnsubscribeCallback
 from .device_manager import DeviceManager
 from .pubnub_on_request import get
 from ..logger.logging_config import get_logger
@@ -140,7 +140,12 @@ class PubNubManager:
         Returns:
             future: Asyncio future envelope.
         """
-        return self.pn.publish().channel(channel).message(message).sync()
+        func = self.pn.publish().channel(channel).message(message)
+        try:
+            return func.sync()
+        except PubNubException as e:
+            print("Publish error: ", e)
+            return e
 
     def here_now(self, channels, include_uuids=True, include_state=False, override_listener=None):
         """HereNow call on a channel. This is an async call.
@@ -150,6 +155,8 @@ class PubNubManager:
             include_uuids (bool, optional): Include UUIDs. Defaults to True.
             include_state (bool, optional): Include State. Defaults to False.
         """
+        print("Herenow Async channels: ", channels)
+        print("Isinstance: ", channels.__class__.__name__)
         function_builder = self.pn.here_now().channels(channels)
         if include_uuids:
             function_builder = function_builder.include_uuids(include_uuids)

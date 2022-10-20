@@ -1,5 +1,7 @@
 """Unittest file for pubnub_manager_asyncio.py."""
 import asyncio
+import random
+import string
 
 from unittest import TestCase
 from logging import DEBUG
@@ -185,3 +187,34 @@ class TestPubNubAsyncioManager(TestCase):
             exp = f'HereNow Result total occupancy: {occupancy}, total channels: {num_channels}'
             LOG.info(str(envelope.result))
             self.assertEqual(response, exp)
+
+    @async_test
+    async def test_here_now_async_multiple_channels(self):
+        """Test hereNow async to a channel list."""
+        rnd_ch = ''.join(random.choices(string.ascii_uppercase + string.digits, k=11))
+        envelope = await self.server.here_now((self.channel, rnd_ch))
+
+        # The following should be encapsulated but this is how we can test it
+        if envelope.is_error():
+            # There is an error
+            LOG.error("Error %s", str(envelope))
+            LOG.error("Error category #%d", envelope.status.category)
+            self.fail()
+        else:
+            # There is no error
+            response = str(envelope.result)  # get e.result as str
+            #num_channels = len(envelope.result.channels)
+            #occupancy = None
+            print("Response: ", response)
+            #for channel_data in envelope.result.channels:
+                #LOG.debug("channel: %s", channel_data.channel_name)
+                #LOG.debug("occupancy: %s", channel_data.occupancy)
+                #occupancy = channel_data.occupancy
+
+                #LOG.debug("occupants: %s", channel_data.channel_name)
+            #for occupant in channel_data.occupants:
+                #LOG.debug("uuid %s, state: %s", occupant.uuid, occupant.state)
+            #exp = f'HereNow Result total occupancy: {occupancy}, total channels: {num_channels}'
+            #LOG.info(str(envelope.result))
+            #self.assertEqual(response, exp)
+            self.assertFalse(True)

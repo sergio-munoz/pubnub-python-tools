@@ -133,7 +133,7 @@ class TestPubNubManager(TestCase):
         """Test hereNow in a channel."""
         # Test with no subscribes
         self.server.unsubscribe(self.channel)
-        time.sleep(1)
+        time.sleep(3)
 
         # Create HereNowCallback
         hnc = HereNowCallback()
