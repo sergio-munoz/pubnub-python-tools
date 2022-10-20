@@ -13,7 +13,6 @@ class RunMainAppTests(TestCase):
     def test_request_function(self):
         """Tests request_function function from device_manager.py."""
         LOG.info("Testing request_function()")
-
         URL = "https://ps.pndsn.com/v1/blocks/sub-key/sub-c-0b961af6-42b7-463d-ac2f-99a6714b57af/conn"
         PARAMS = {'channelid': 'us.e001.UUID'}
         BODY = {"Content": "Awesome bro!"} 

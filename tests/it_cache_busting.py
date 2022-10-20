@@ -134,37 +134,3 @@ class TestHereNowCache(TestCase):
             ),
         )
 
-    # def test_here_now_cache_busting(self):
-        # """Test hereNow cache busting using random channel name."""
-        # # Test with no subscribers
-        # [i.unsubscribe(self.channel) for i in SERVERS]
-        # time.sleep(5)
-
-        # # Create HereNowCallback
-        # hnc = HereNowCallback(sort_uuids=True)
-
-        # # Create random channel
-        # rnd_ch = 'test.'+''.join(random.choices(string.ascii_uppercase + string.digits, k=11))
-
-        # # Call here now
-        # SERVERS[0].here_now((self.channel, rnd_ch), override_listener=hnc.here_now_callback)
-        # time.sleep(2)
-
-        # LOG.info(hnc)
-        # print(hnc)
-
-        # # Create random channel
-        # rnd_ch = 'test.'+''.join(random.choices(string.ascii_uppercase + string.digits, k=11))
-
-        # # Call here_now again
-        # SERVERS[0].here_now((self.channel, rnd_ch), override_listener=hnc.here_now_callback)
-        # time.sleep(2)
-
-        # LOG.info(hnc)
-        # print(hnc)
-
-        # # Cleanup
-        # [i.unsubscribe(self.channel) for i in SERVERS]
-
-        # # Fail on purpose
-        # self.assertFalse(True)

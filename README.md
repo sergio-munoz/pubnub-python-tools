@@ -268,40 +268,35 @@ OK
 ### Coverage
 
 ```shell
-(venv) $ python -m coverage run -m unittest
-(venv) $ python -m coverage report
+(venv) $ python -m coverage run -m unittest discover
+(venv) $ python -m coverage report -i
 ```
 
 ```
 Name                                                       Stmts   Miss  Cover
 ------------------------------------------------------------------------------
-pubnub_python_tools/__init__.py                                0      0   100%
-pubnub_python_tools/app/__init__.py                            0      0   100%
-pubnub_python_tools/app/device_manager.py                     74     16    78%
-pubnub_python_tools/app/main_app.py                           44     32    27%
-pubnub_python_tools/app/pubnub_config.py                      16      0   100%
-pubnub_python_tools/app/pubnub_handle_disconnects.py          17      8    53%
-pubnub_python_tools/app/pubnub_here_now_callback.py           15     12    20%
-pubnub_python_tools/app/pubnub_listener.py                   112     56    50%
-pubnub_python_tools/app/pubnub_manager.py                     65     18    72%
-pubnub_python_tools/app/pubnub_manager_asyncio.py             51     11    78%
-pubnub_python_tools/app/pubnub_on_request.py                   3      0   100%
-pubnub_python_tools/app/pubnub_publish.py                     15     11    27%
-pubnub_python_tools/cli/__init__.py                            0      0   100%
-pubnub_python_tools/cli/v1.py                                 18      0   100%
-pubnub_python_tools/config/__init__.py                         0      0   100%
-pubnub_python_tools/config/http_on_request_on_connect.py      15      3    80%
-pubnub_python_tools/config/module_config.py                   20      3    85%
-pubnub_python_tools/logger/__init__.py                         0      0   100%
-pubnub_python_tools/logger/logging_config.py                  32      9    72%
-scripts/__init__.py                                            0      0   100%
+src/pubnub_python_tools/app/device_manager.py                 74     16    78%
+src/pubnub_python_tools/app/main_app.py                       46     35    24%
+src/pubnub_python_tools/app/pubnub_config.py                  16      0   100%
+src/pubnub_python_tools/app/pubnub_handle_disconnects.py      29     20    31%
+src/pubnub_python_tools/app/pubnub_here_now_callback.py       45      9    80%
+src/pubnub_python_tools/app/pubnub_listener.py               133     73    45%
+src/pubnub_python_tools/app/pubnub_manager.py                 89     33    63%
+src/pubnub_python_tools/app/pubnub_manager_asyncio.py         48     11    77%
+src/pubnub_python_tools/app/pubnub_on_request.py               3      0   100%
+src/pubnub_python_tools/app/pubnub_publish.py                 15     11    27%
+src/pubnub_python_tools/cli/v1.py                             18      0   100%
+src/pubnub_python_tools/config/module_config.py               20      3    85%
+src/pubnub_python_tools/logger/logging_config.py              32      9    72%
 tests/__init__.py                                              4      0   100%
 tests/test_device_manager.py                                  67      0   100%
 tests/test_main_app.py                                         9      0   100%
-tests/test_pubnub_manager.py                                  64      0   100%
-tests/test_pubnub_manager_asyncio.py                          88      7    92%
+tests/test_pubnub_manager.py                                  79      0   100%
+tests/test_pubnub_manager_asyncio.py                         102     10    90%
 tests/test_request_function.py                                15      0   100%
 tests/test_v1.py                                              32      0   100%
 ------------------------------------------------------------------------------
-TOTAL                                                        776    186    76%
+TOTAL                                                        876    230    74%
+
+6 empty files skipped.
 ```

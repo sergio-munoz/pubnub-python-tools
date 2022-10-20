@@ -203,18 +203,6 @@ class TestPubNubAsyncioManager(TestCase):
         else:
             # There is no error
             response = str(envelope.result)  # get e.result as str
-            #num_channels = len(envelope.result.channels)
-            #occupancy = None
             print("Response: ", response)
-            #for channel_data in envelope.result.channels:
-                #LOG.debug("channel: %s", channel_data.channel_name)
-                #LOG.debug("occupancy: %s", channel_data.occupancy)
-                #occupancy = channel_data.occupancy
-
-                #LOG.debug("occupants: %s", channel_data.channel_name)
-            #for occupant in channel_data.occupants:
-                #LOG.debug("uuid %s, state: %s", occupant.uuid, occupant.state)
-            #exp = f'HereNow Result total occupancy: {occupancy}, total channels: {num_channels}'
-            #LOG.info(str(envelope.result))
-            #self.assertEqual(response, exp)
-            self.assertFalse(True)
+            expected = "HereNow Result total occupancy: 0, total channels: 0"
+            self.assertEqual(expected, response)

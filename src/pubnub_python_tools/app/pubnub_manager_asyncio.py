@@ -103,8 +103,8 @@ class PubNubAsyncioManager():
             include_uuids (bool, optional): Include UUIDs. Defaults to True.
             include_state (bool, optional): Include State. Defaults to False.
         """
-        print("Herenow Async channels: ", channels)
-        print("Isinstance: ", channels.__class__.__name__)
+        # print("Herenow Async channels: ", channels)
+        # print("Isinstance: ", channels.__class__.__name__)
         function_builder = self.pn.here_now().channels(channels)
         if include_uuids:
             function_builder = function_builder.include_uuids(include_uuids)
