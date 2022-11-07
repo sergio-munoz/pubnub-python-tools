@@ -28,6 +28,11 @@ def main(args=None):
     args = get_parser(args)
     LOG.debug("Parsed arguments: %s", args)
 
+    # Display version
+    if args.version is not None:
+        from ..__about__ import __version__ as ppt_version
+        print(f'PubNub Python Tools v{ppt_version}')
+
     # Environment variables from module_config
     subscribe_key = module_config.SUBSCRIBE_KEY
     publish_key = module_config.PUBLISH_KEY

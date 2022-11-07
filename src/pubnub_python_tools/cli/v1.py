@@ -18,6 +18,7 @@ parser.add_argument("-us", "--unsubscribe", type=str, help="Unsubscribe from a C
 parser.add_argument("-here", "--here-now", type=str, help="Here now on a Channel")
 parser.add_argument("-dm", "--dev-man", type=str, help="Attach a Device Manager to file")
 parser.add_argument("-a", "--async-cmd", type=str, help="Run command asynchronously using Asyncio")
+parser.add_argument("-version", action='store_true', help="Get pubnub-python-tools version")
 
 
 def get_parser(args):
