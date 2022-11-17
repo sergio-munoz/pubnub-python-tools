@@ -39,6 +39,7 @@ class TestPubNubManager(TestCase):
 
     def test_publish(self):
         """Test publish a message."""
+        self.channel = "test.channel.1"
         envelope = self.server.publish(self.channel, self.message)
 
         # The following should be encapsulated but this is how we can test it
@@ -51,6 +52,7 @@ class TestPubNubManager(TestCase):
 
     def test_subscribe_message(self):
         """Test subscribe to a channel message."""
+        self.channel = "test.channel.2"
         callback = MySubscribeCallback()  # create callback
         self.server._add_listener(callback)  # add callback
         self.server.subscribe(self.channel)  # subscribe
@@ -73,6 +75,7 @@ class TestPubNubManager(TestCase):
 
     def test_subscribe_presence(self):
         """Test subscribe to a channel presence."""
+        self.channel = "test.channel.3"
         callback = MySubscribeCallback()  # create callback
         self.server._add_listener(callback)  # add callback
         self.server.unsubscribe(self.channel)  # unsubscribe
@@ -103,6 +106,7 @@ class TestPubNubManager(TestCase):
 
     def test_unsubscribe(self):
         """Test unsubscribe to a channel."""
+        self.channel = "test.channel.4"
         callback = MySubscribeCallback()  # Try with a subscribe callback
         self.server._add_listener(callback)
         self.server.subscribe(self.channel, presence=True)

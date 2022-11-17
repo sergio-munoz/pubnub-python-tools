@@ -3,10 +3,9 @@ import sys
 
 from . import pubnub_manager
 from . import pubnub_manager_asyncio
-from ..cli.v1 import get_parser
-from ..logger.logging_config import get_logger
+from ..cli.v1 import create_parser
 from ..config import module_config
-# from ..config import http_on_request_on_connect as oc
+from ..logger.logging_config import get_logger
 
 LOG = get_logger()  # Get logger if needed. Default: INFO
 
@@ -17,26 +16,25 @@ def main(args=None):
     Args:
         args: User arguments to parse. See cli/v1.py.
     """
-    # Check if args were passed
-    if not args:
-        args = sys.argv[1:]  # Obtain from cli
-        # No parameter args sent. Try system argv
-        if len(args) <= 0:
-            print("No args detected. Read help: pubnub-pytools --help ")
-            sys.exit()
-    # Parse arguments
-    args = get_parser(args)
-    LOG.debug("Parsed arguments: %s", args)
-
-    # Display version
-    if args.version is not None:
-        from ..__about__ import __version__ as ppt_version
-        print(f'PubNub Python Tools v{ppt_version}')
+    # Validate args
+    print(args)
+    parser = create_parser()
+    args = parser.parse_args(args)
+    if parser.error_message:
+        stdout = f"{parser.error_message}"
+        print(stdout)
+        return stdout
 
     # Environment variables from module_config
     subscribe_key = module_config.SUBSCRIBE_KEY
     publish_key = module_config.PUBLISH_KEY
     user_id = module_config.USER_ID
+
+    # Display version
+    if args.version is not None:
+        stdout = f"PubNub Python Tools v{get_version()}"
+        print(stdout)
+        return stdout
 
     # Override Environment variables from CLI
     if args.subscribe_key is not None:
@@ -50,7 +48,9 @@ def main(args=None):
     pnmg = None
     if args.async_cmd:
         # Create PubNub Async Manager
-        pnmg = pubnub_manager_asyncio.PubNubAsyncioManager(subscribe_key, publish_key, user_id)
+        pnmg = pubnub_manager_asyncio.PubNubAsyncioManager(
+            subscribe_key, publish_key, user_id
+        )
     else:
         # Create PubNub Manager
         pnmg = pubnub_manager.PubNubManager(subscribe_key, publish_key, user_id)
@@ -87,8 +87,25 @@ def main(args=None):
         pnmg.unsubscribe(args.unsubscribe)
 
 
-# Simple health function to be tested with unittest
-def simple_function(real_number):
-    """:returns: real_number + 1"""
-    LOG.debug("Adding 1 to %d", real_number)
-    return real_number + 1
+# Health-check function - get current version
+def get_version() -> str:
+    """Get pubnub-python-tools version.
+
+    Returns:
+        str: Current pubnub-python-tools package version.
+    """
+    from ..__about__ import __version__ as ppt_version
+    return f"{ppt_version}"
+
+
+def validate_args(args) -> dict:
+    LOG.debug("Validating args")
+    # Check if args were passed
+    if not args:
+        # Try obtain from CLI
+        args = sys.argv[1:]
+        # No parameter args sent. Try system argv
+        if len(args) <= 0:
+            print("No args detected. Run: pubnub-python-tools --help")
+            return None
+        return args
