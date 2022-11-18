@@ -18,34 +18,39 @@ To install `pubnub-python-tools`:
 
 ### Install using pip
 
-> This is only uploaded in the testing repository version of `pypi` as this is not yet officially released. Check it out: [https://test.pypi.org/project/pubnub-python-tools/](https://test.pypi.org/project/pubnub-python-tools/)
-
-To install the latest managed packaged version:
+Install from [Pypi](https://pypi.org/project/pubnub-python-tools/):
 
 ```shell
-$ python -m pip install -i https://test.pypi.org/simple/ pubnub-python-tools
+pip install pubnub-python-tools
 ```
+
+To install the testing version [https://test.pypi.org/project/pubnub-python-tools/](https://test.pypi.org/project/pubnub-python-tools/):
+
+```shell
+python -m pip install -i https://test.pypi.org/simple/ pubnub-python-tools
+```
+
+> Testing version might be outdated or unstable.
 
 ### Automatic build and install
 
-> It is recommended to setup a [virtual environment]().
+> It is recommended to setup a [virtual environment](https://docs.python.org/3/library/venv.html).
 
 To install locally the latest git version:
 
 ```shell
-$ git clone https://github.com/sergio-munoz/pubnub-python-tools
-$ ./scripts/build_install.sh
+git clone https://github.com/sergio-munoz/pubnub-python-tools
+chmod +x ./scripts/build_install.sh
+./scripts/build_install.sh
 ```
-
-> Set script permissions with `chmod +x`
 
 ### Manually build and install
 
 Setup a new python virtual environment and install packages in `requirements_build.txt`:
 
 ```shell
-$ python3 -m venv build_venv
-$ source build_venv/bin/activate
+python -m venv build_venv
+source build_venv/bin/activate
 (build_venv) $ pip install -r build_requirements.txt
 (build_venv) $ hatch build
 (build_venv) $ pip install dist/pubnub_python_tools-${VERSION}.tar.gz
@@ -53,7 +58,7 @@ $ source build_venv/bin/activate
 
 ### Install into a Jupyter Notebook
 
-To install the latest testing repository version into the Jupyter Notebook kernel:
+To install the into the Jupyter Notebook kernel:
 
 ```shell
 import sys
@@ -153,8 +158,8 @@ $ python ./scripts/run_pn.py --help
 $ pubnub-python-tools --help
 ```
 
-## CLI Usage Reference
-----------------------
+## Usage Examples
+-----------------
 
 > Remember to always set up your UUID `USER_ID` with `-u`.
 
@@ -165,25 +170,32 @@ Subscribe to a channel forever.
 ```shell
 python run_pn.py -s "Space"
 ```
-__CLI Args:__
-
-* `-sk`, `--subscribe-key` - PubNub subscribe key (or set in `.env`)
-* `-s`, `--subscribe` - PubNub subscribe channel name
 
 ### Publish
 
-Publish a message to a channel.
+Publish one message to a space.
 
 ```shell
-python run_pn.py -p "Space" -m "payload"
+python-pubnub-tools -p "Space" -m "payload"
 ```
 
-__CLI Args:__
+Publish multiple messages to a space.
 
-* `-sk`, `--subscribe-key` - PubNub subscribe key (or set in `.env`)
-* `-pk`, `--publish-key` - PubNub publish key (or set in `.env`)
-* `-p`, `--publish` - PubNub publish channel name
-* `-m`, `--message` - Message to publish
+```shell
+python-pubnub-tools -p "Space" -mm "payload1" "payload2" "payloadN"
+```
+
+Publish one message to multiple spaces.
+
+```shell
+python-pubnub-tools -p "SpaceA" "SpaceB" "SpaceN" -m "payload"
+```
+
+Publish multiple messages to multiple spaces.
+
+```shell
+python-pubnub-tools -pm "SpaceA" "SpaceB", "SpaceN" -mm "payload1" "payload2" "payloadN"
+```
 
 > For some reason the pubnub python sdk fails to publish when instantiated without a subscribe key, so pass it to avoid issues.
 
@@ -192,25 +204,16 @@ __CLI Args:__
 Subscribe to a channel with Presence forever. 
 
 ```shell
-python run_pn.py -s "Space" -pres
+pubnub-python-tools -s "Space" -pres
 ```
-
-__CLI Args:__
-* `-sk`, `--subscribe-key` - PubNub subscribe key (or set in `.env`)
-* `-s`, `--subscribe` - PubNub subscribe channel name
-* `-pres`, `--presence` - Presence flag
 
 ### HereNow
 
 Call `Here Now` on a channel. 
 
 ```shell
-python run_pn.py -here "Space"
+pubnub-python-tools -here "Space"
 ```
-
-__CLI Args:__
-* `-sk`, `--subscribe-key` - PubNub subscribe key (or set in `.env`)
-* `-here`, `--here-how` - Here now on a channel name
 
 For advanced `HereNow` topics see: [cache busting information](#cache_busting). __NOTE: TBD SOON__
 
@@ -222,9 +225,39 @@ Send a leave event to a channel subscribed with Presence.
 python run_pn.py -us "Space"
 ```
 
-__CLI Args:__
-* `-sk`, `--subscribe-key` - PubNub subscribe key (or set in `.env`)
-* `-us`, `--unsubscribe` - PubNub channel name to unsubscribe from
+CLI Commands Reference
+----------------------
+
+From `pubnub-python-tools --help`:
+
+```
+  -h, --help            show this help message and exit
+  --stop-on-fail        Stop batch operations if something goes wrong.
+  --version             Current pubnub-python-tools Version
+  -a ASYNC_CMD, --async-cmd ASYNC_CMD
+                        Run command asynchronously using Asyncio
+  -dm DEV_MAN, --dev-man DEV_MAN
+                        Attach a Device Manager to file
+  -here HERE_NOW, --here-now HERE_NOW
+                        Here now on a Channel
+  -m MESSAGE, --message MESSAGE
+                        Message to publish
+  -mm MULTIPLE_MESSAGES [MULTIPLE_MESSAGES ...], --multiple-messages MULTIPLE_MESSAGES [MULTIPLE_MESSAGES ...]
+                        Messages to publish
+  -p PUBLISH, --publish PUBLISH
+                        Publish a message to a Channel
+  -pk PUBLISH_KEY, --publish-key PUBLISH_KEY
+                        PubNub PublishKey
+  -pm PUBLISH_MULTIPLE_CHANNELS [PUBLISH_MULTIPLE_CHANNELS ...], --publish-multiple-channels PUBLISH_MULTIPLE_CHANNELS [PUBLISH_MULTIPLE_CHANNELS ...]
+                        Publish to multiple Channels
+  -pres, --presence     Subscribe with Presence
+  -s SUBSCRIBE, --subscribe SUBSCRIBE
+                        Subscribe to a Channel
+  -sk SUBSCRIBE_KEY, --subscribe-key SUBSCRIBE_KEY
+                        PubNub SubscribeKey
+  -u UUID, --uuid UUID  PubNub UUID
+  -us UNSUBSCRIBE, --unsubscribe UNSUBSCRIBE
+```
 
 ## Use Cases
 ___

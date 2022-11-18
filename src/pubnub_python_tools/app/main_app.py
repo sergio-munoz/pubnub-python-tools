@@ -32,6 +32,8 @@ def main(args=None):
         stdout = f"{parser.error_message}"
         print(stdout)
         return stdout
+    if not args:
+        exit()
 
     # Environment variables from module_config
     subscribe_key = module_config.SUBSCRIBE_KEY
