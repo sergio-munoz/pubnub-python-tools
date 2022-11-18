@@ -141,11 +141,16 @@ class PubNubManager:
             future: Asyncio future envelope.
         """
         func = self.pn.publish().channel(channel).message(message)
+        return func.sync()
+
+    def publish_wrap(self, channel, message):
         try:
-            return func.sync()
+            envelope = self.publish(channel, message)
+            response = str(envelope.result)
+            return response
         except PubNubException as e:
             print("Publish error: ", e)
-            return e
+            return str(e)
 
     def here_now(self, channels, include_uuids=True, include_state=False, override_listener=None):
         """HereNow call on a channel. This is an async call.

@@ -3,7 +3,7 @@ import sys
 
 from . import pubnub_manager
 from . import pubnub_manager_asyncio
-from ..cli.v1 import create_parser
+from ..cli.v2 import create_parser
 from ..config import module_config
 from ..logger.logging_config import get_logger
 
@@ -16,8 +16,16 @@ def main(args=None):
     Args:
         args: User arguments to parse. See cli/v1.py.
     """
+    # Args obtain from CLI
+    if not args:
+        args = sys.argv[1:]
+        # No parameter args sent. Try system argv
+        if len(args) <= 0:
+            print("No args detected. Run: pubnub-python-tools --help")
+            return None
+
     # Validate args
-    print(args)
+    print(args)  # TODO change to log
     parser = create_parser()
     args = parser.parse_args(args)
     if parser.error_message:
@@ -31,7 +39,7 @@ def main(args=None):
     user_id = module_config.USER_ID
 
     # Display version
-    if args.version is not None:
+    if args.version:
         stdout = f"PubNub Python Tools v{get_version()}"
         print(stdout)
         return stdout
@@ -70,13 +78,42 @@ def main(args=None):
         pnmg.subscribe(args.subscribe, presence=args.presence)
 
     # Publish
-    if args.publish:
+    if args.publish:  # -p
+        # Publish multiple messages
+        if args.multiple_messages:  # -mm
+            responses = []
+            for msg in args.multiple_messages:
+                responses.append(pnmg.publish_wrap(args.publish, msg))
+            return responses
+
+        # Publish one message
+        if not args.message:  # -m
+            err_msg = "Can't publish empty message. Use -m flag."
+            print(err_msg)
+            LOG.error(err_msg)
+            return err_msg
+        return pnmg.publish_wrap(args.publish, args.message)
+
+    # Publish Multiple Channels
+    if args.publish_multiple_channels:
+        # Publish multiple messages
+        if args.multiple_messages:  # -mm
+            responses = []
+            for msg in args.multiple_messages:
+                for channel in args.publish_multiple_channels:
+                    responses.append(pnmg.publish_wrap(channel, msg))
+            return responses
+
+        # Publish one message
         if not args.message:
             err_msg = "Can't publish empty message. Use -m flag."
             print(err_msg)
             LOG.error(err_msg)
-            return
-        pnmg.publish(args.publish, args.message)
+            return err_msg
+        responses = []
+        for channel in args.publish_multiple_channels:
+            responses.append(pnmg.publish_wrap(channel, args.message))
+        return responses
 
     # HereNow
     if args.here_now:

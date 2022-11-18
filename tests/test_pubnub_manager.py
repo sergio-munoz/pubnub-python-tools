@@ -39,15 +39,30 @@ class TestPubNubManager(TestCase):
 
     def test_publish(self):
         """Test publish a message."""
-        self.channel = "test.channel.1"
-        envelope = self.server.publish(self.channel, self.message)
+        self.channel = "test.publish"
 
-        # The following should be encapsulated but this is how we can test it
+        # This is encapsulated on publish_wrap
+        envelope = self.server.publish(self.channel, self.message)
         response = str(envelope.result)  # get e.result as str
         LOG.info(str(envelope.result))
 
         # Extract timetoken from result
         expected = f"Publish success with timetoken {response.split()[-1]}"
+        self.assertEqual(expected, response)
+
+    def test_publish_wrap(self):
+        """Test publish wrap"""
+        self.channel = "test.publish_wrap"
+        response = self.server.publish_wrap(self.channel, self.message)
+        expected = f"Publish success with timetoken {response.split()[-1]}"
+        self.assertEqual(expected, response)
+
+    def test_publish_wrap_error(self):
+        """Test publish wrap error"""
+        self.channel = "test.error.publish_wrap."
+        response = self.server.publish_wrap(self.channel, self.message)
+        err = "HTTP Client Error (400): [0,\"Wildcard maximum depth "
+        expected = f"{err}{response.split()[-1]}"
         self.assertEqual(expected, response)
 
     def test_subscribe_message(self):

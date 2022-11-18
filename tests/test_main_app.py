@@ -17,10 +17,16 @@ class TestMainApp(TestCase):
         # This should never fail :)
         self.assertEqual(main_app.get_version(), __version__)
 
-    def test_args_get_version(self):
+    def test_version(self):
         arg = "--version"
         expected = f"PubNub Python Tools v{__version__}"
         self.assertEqual(main_app.main([arg]), expected)
+
+    def test_publish(self):
+        args = ["--publish", "test.ch", "--message", "test123"]
+        response = main_app.main(args)
+        expected = f"Publish success with timetoken {response.split()[-1]}"
+        self.assertEqual(response, expected)
 
     def test_args_invalid(self):
         arg = "--invalid"
