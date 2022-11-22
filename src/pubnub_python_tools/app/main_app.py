@@ -3,6 +3,7 @@ import sys
 
 from . import pubnub_manager
 from . import pubnub_manager_asyncio
+from . import acl_utils
 from ..cli.v2 import create_parser
 from ..config import module_config
 from ..logger.logging_config import get_logger
@@ -25,7 +26,7 @@ def main(args=None):
             return None
 
     # Validate args
-    print(args)  # TODO change to log
+    LOG.debug(args)
     parser = create_parser()
     args = parser.parse_args(args)
     if parser.error_message:
@@ -45,7 +46,7 @@ def main(args=None):
         stdout = f"PubNub Python Tools v{get_version()}"
         print(stdout)
         return stdout
-
+    
     # Override Environment variables from CLI
     if args.subscribe_key is not None:
         subscribe_key = args.subscribe_key
@@ -124,6 +125,12 @@ def main(args=None):
     # Unsubscribe
     if args.unsubscribe:
         pnmg.unsubscribe(args.unsubscribe)
+
+    # Regex ACL
+    if args.regex_acl:
+        stdout = acl_utils.get_acl_regex(args.regex_acl)
+        LOG.info(stdout)
+        print(stdout)
 
 
 # Health-check function - get current version

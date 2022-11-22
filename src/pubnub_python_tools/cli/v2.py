@@ -4,7 +4,7 @@ import argparse
 DESCRIPTION = "Quickly interact with PubNub's Python SDK."
 
 
-# sub class ArgumentParser to catch an error message and prevent application closing
+# sub class ArgumentParser to catch an error message and prevent application from closing
 class MyArgumentParser(argparse.ArgumentParser):
 
     def __init__(self, *args, **kwargs):
@@ -45,6 +45,7 @@ def create_parser():
     parser.add_argument("-pk", "--publish-key", type=str, help="PubNub PublishKey")
     parser.add_argument("-pm", "--publish-multiple-channels", nargs="+", type=str, help="Publish to multiple Channels")
     parser.add_argument("-pres", "--presence", action='store_true', help="Subscribe with Presence")
+    parser.add_argument("-regex", "--regex-acl", type=str, help="Replace regex pattern into a PubNub regex")
     parser.add_argument("-s", "--subscribe", type=str, help="Subscribe to a Channel")
     parser.add_argument("-sk", "--subscribe-key", type=str, help="PubNub SubscribeKey")
     parser.add_argument("-u", "--uuid", type=str, help="PubNub UUID")
