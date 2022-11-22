@@ -143,7 +143,7 @@ class PubNubManager:
         func = self.pn.publish().channel(channel).message(message)
         return func.sync()
 
-    def publish_wrap(self, channel, message):
+    def publish_wrap(self, channel, message) -> str:
         try:
             envelope = self.publish(channel, message)
             response = str(envelope.result)
@@ -151,6 +151,14 @@ class PubNubManager:
         except PubNubException as e:
             print("Publish error: ", e)
             return str(e)
+
+    def publish_wrap_with_exception(self, channel, message) -> str:
+        try:
+            envelope = self.publish(channel, message)
+            response = str(envelope.result)
+            return response
+        except PubNubException:
+            raise PubNubException
 
     def here_now(self, channels, include_uuids=True, include_state=False, override_listener=None):
         """HereNow call on a channel. This is an async call.

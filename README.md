@@ -251,6 +251,7 @@ From `pubnub-python-tools --help`:
   -pm PUBLISH_MULTIPLE_CHANNELS [PUBLISH_MULTIPLE_CHANNELS ...], --publish-multiple-channels PUBLISH_MULTIPLE_CHANNELS [PUBLISH_MULTIPLE_CHANNELS ...]
                         Publish to multiple Channels
   -pres, --presence     Subscribe with Presence
+  -regex REGEX_ACL, --regex-acl REGEX_ACL Replace regex pattern into a PubNub regex
   -s SUBSCRIBE, --subscribe SUBSCRIBE
                         Subscribe to a Channel
   -sk SUBSCRIBE_KEY, --subscribe-key SUBSCRIBE_KEY

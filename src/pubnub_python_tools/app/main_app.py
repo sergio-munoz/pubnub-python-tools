@@ -1,5 +1,6 @@
 """Main app logic file."""
 import sys
+from pubnub.exceptions import PubNubException
 
 from . import pubnub_manager
 from . import pubnub_manager_asyncio
@@ -86,7 +87,15 @@ def main(args=None):
         if args.multiple_messages:  # -mm
             responses = []
             for msg in args.multiple_messages:
-                responses.append(pnmg.publish_wrap(args.publish, msg))
+                try:
+                    responses.append(pnmg.publish_wrap_with_exception(args.publish, msg))
+                except PubNubException as e:
+                    if (args.stop_on_fail):
+                        responses.append(str(e))
+                        print("Error publishing. Stopping...")
+                        break
+                    print("Error publishing. Continuing...")
+                    responses.append(str(e))
             return responses
 
         # Publish one message
@@ -104,7 +113,14 @@ def main(args=None):
             responses = []
             for msg in args.multiple_messages:
                 for channel in args.publish_multiple_channels:
-                    responses.append(pnmg.publish_wrap(channel, msg))
+                    try:
+                        responses.append(pnmg.publish_wrap_with_exception(channel, msg))
+                    except PubNubException as e:
+                        if (args.stop_on_fail):
+                            responses.append(str(e))
+                            print("Error publishing. Stopping...")
+                            break
+                        responses.append(str(e))
             return responses
 
         # Publish one message
