@@ -3,8 +3,8 @@ from dbus_next.service import (ServiceInterface,
                                method, dbus_property, signal)
 from dbus_next import Variant, DBusError
 
+import getpass
 import asyncio
-import os
 
 class ExampleInterface(ServiceInterface):
     def __init__(self):
@@ -48,9 +48,12 @@ class ExampleInterface(ServiceInterface):
 
         self.emit_properties_changed({'Bar': self._bar})
 
+
 async def main():
-    username = os.environ.get('USERNAME')
-    bus = await MessageBus(f"unix:path=/tmp/dbus/{username}.session.usock").connect()
+    username = getpass.getuser()
+    bus_address = f"unix:path=/tmp/dbus/{username}.session.usock"
+    print(bus_address)
+    bus = await MessageBus(bus_address).connect()
     interface = ExampleInterface()
     bus.export('/com/example/sample0', interface)
     await bus.request_name('com.example.name')

@@ -1,5 +1,6 @@
 import sys
 import os
+import getpass
 
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/..'))
 
@@ -13,8 +14,9 @@ loop = asyncio.get_event_loop()
 
 
 async def main():
-    username = os.environ.get('USERNAME')
-    bus = await MessageBus(f"unix:path=/tmp/dbus/{username}.session.usock").connect()
+    username = getpass.getuser()
+    bus_address = f"unix:path=/tmp/dbus/{username}.session.usock"
+    bus = await MessageBus(bus_address).connect()
 
     reply = await bus.call(
         Message(destination='com.example.name',
