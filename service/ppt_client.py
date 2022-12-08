@@ -31,5 +31,24 @@ async def main():
 
     print(json.dumps(reply.body[0], indent=2))
 
+    reply = await bus.call(
+        Message(destination='com.example.name',
+                path='/com/example/sample0',
+                interface='com.example.SampleInterface0',
+                member='subscribe',
+                signature='s',
+                body=["test.dbus.subscribe-2"]))
 
+    reply = await bus.call(
+        Message(destination='com.example.name',
+                path='/com/example/sample0',
+                interface='com.example.SampleInterface0',
+                member='publish',
+                signature='ss',
+                body=["test.ch", "dbus test"]))
+
+    if reply.message_type == MessageType.ERROR:
+        raise Exception(reply.body[0])
+
+    print(json.dumps(reply.body[0], indent=2))
 loop.run_until_complete(main())

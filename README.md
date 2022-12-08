@@ -8,8 +8,10 @@ Quickly interact with PubNub using the Python SDK.
 
 For MacOS use `homebrew` to install packages or the following [PubNub Ansible Role Python SDK](https://github.com/sergio-munoz/pubnub-ansible-role-python-sd) that sets *everything* for you. 
 
-- python3
-- python-tk
+- `python3`
+- `python-tk`
+-  `pygobject3`
+- `dbus`
 
 ## Install
 ----------
@@ -279,6 +281,49 @@ Open another terminal and run that command modified to show that the user is sti
 ```
 
 Dig into the `logger/main_log.log` to see more information.
+
+## Service
+
+Unix compatible Service with Systemd and dbus integration using `dbus-next`.
+
+### Manually Start
+
+You need to create a socket (file) and start the daemon at that address. Then start the service interface and run a command from a client.
+
+1. Open a terminal and run:
+
+```shell
+export MY_SESSION_BUS_SOCKET="/tmp/dbus/$USER.session.usock"
+mkdir $(dirname $MY_SESSION_BUS_SOCKET)
+dbus-daemon --session --nofork --address unix:path=$MY_SESSION_BUS_SOCKET
+```
+2. Open another terminal and run:
+
+```shell
+python3 service/high_level_service_interface.py
+```
+
+3. Open another terminal and run:
+
+```shell
+python3 service/ppt_client.py
+```
+
+### Automatically Start
+
+- In progress...
+
+```shell
+brew services start dbus
+```
+
+### Testing
+
+Start the daemon, service interface and start a dbus monitor.
+
+```shell
+dbus-monitor --address unix:path=$MY_SESSION_BUS_SOCKET
+```
 
 ## Tests
 ---

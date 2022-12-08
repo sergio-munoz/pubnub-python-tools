@@ -1,0 +1,4 @@
+# PubNub Python Tools service description file
+[D-BUS Service PubNub Python Tools]
+Name=com.example.name
+Exec=/usr/bin/python3 /Users/sergio.munoz/Data/Git/pubnub-python-tools/service/high_level_service_interface.py
