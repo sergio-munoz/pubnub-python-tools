@@ -1,18 +1,18 @@
-"""Test file for test_internal_rest_api.py."""
+"""Test file for pubnub_internal_rest_api.py."""
 from unittest import TestCase
 from logging import DEBUG
 
 from src.pubnub_python_tools.logger.logging_config import set_logger
 from src.pubnub_python_tools.app.pubnub_internal_rest_api import authenticate, get_accounts, get_accounts_ids, get_apps, get_apps_ids, get_app_based_usage
 
-LOG = set_logger("test_request_function", DEBUG)  # Create a logger if needed. 
+LOG = set_logger("pubnub_internal_rest_api", DEBUG)  # Create a logger if needed. 
 
 
 class TestPubNubInternalRestAPI(TestCase):
 
     def test_authenticate(self):
         """Tests authenticate function."""
-        LOG.info("Testing authenticagte()")
+        LOG.info("Testing authenticate()")
         EMAIL = "6unrdlsk2@mozmail.com"
         PASSWORD = "=T[(_VD9<?Fv=k>d"
 
@@ -24,9 +24,18 @@ class TestPubNubInternalRestAPI(TestCase):
         # Expect token not to be empty
         self.assertIsNotNone(resp[1])
 
+    def test_authenticate_incorrect_credentials(self):
+        """Tests authenticate incorrect credentials function."""
+        LOG.info("Testing invalid credentials authenticate()")
+        EMAIL = "garbage"
+        PASSWORD = "not_a_password"
+
+        with self.assertRaises(Exception):  # TODO - Add specific exception
+            authenticate(EMAIL, PASSWORD)
+
     def test_get_accounts(self):
         """Tests get_accounts function."""
-        LOG.info("Testing authenticagte()")
+        LOG.info("Testing get_accounts()")
         EMAIL = "6unrdlsk2@mozmail.com"
         PASSWORD = "=T[(_VD9<?Fv=k>d"
         auth = authenticate(EMAIL, PASSWORD)
@@ -99,3 +108,12 @@ class TestPubNubInternalRestAPI(TestCase):
         resp = get_app_based_usage(apps_ids[0], auth[1], "transaction", "2022-12-01", "2021-12-02")
         LOG.debug(resp)
         self.assertIsNotNone(resp)
+
+    def test_get_app_based_usage_invalid(self):
+        """Tests get_app_based_usage invalid function."""
+        LOG.info("Testing invalid get_app_based_usage()")
+
+        with self.assertRaises(Exception):  # TODO - Add specific exception
+            resp = get_app_based_usage("no_user", "no_token", "transaction", "2022-12-01", "2021-12-02")
+            print(resp)
+            LOG.debug(resp)

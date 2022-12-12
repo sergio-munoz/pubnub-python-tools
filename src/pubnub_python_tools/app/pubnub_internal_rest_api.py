@@ -17,8 +17,12 @@ def authenticate(email, password):
     response = requests.post(url=URL, headers=HEADER, data=DATA_RAW)
     decoded = str(response.content.decode())
     parsed = json.loads(decoded)
-    token = parsed['result']['token']
-    user = parsed['result']['user']['id']
+
+    try:
+        token = parsed['result']['token']
+        user = parsed['result']['user']['id']
+    except KeyError:
+        raise Exception("Invalid credentials")
 
     return (user, token)
 
@@ -31,9 +35,12 @@ def get_accounts(user, token):
     response = requests.get(url=URL, headers=HEADER)
     decoded = str(response.content.decode())
     parsed = json.loads(decoded)
-    if 'code' in parsed:
+
+    try:
+        accounts = parsed['result']['accounts']
+    except KeyError:
         raise Exception("Invalid credentials")
-    accounts = parsed['result']['accounts']
+
     return accounts
 
 
@@ -52,9 +59,12 @@ def get_apps(account_id, token):
     response = requests.get(url=URL, headers=HEADER)
     decoded = str(response.content.decode())
     parsed = json.loads(decoded)
-    if 'code' in parsed:
+
+    try:
+        apps = parsed['result']
+    except KeyError:
         raise Exception("Invalid credentials")
-    apps = parsed['result']
+
     return apps
 
 
@@ -73,6 +83,6 @@ def get_app_based_usage(app_id, token, usage_type, start_date, end_date):
     response = requests.get(url=URL, headers=HEADER)
     decoded = str(response.content.decode())
     parsed = json.loads(decoded)
-    if 'code' in parsed:
+    if 'error' in parsed:
         raise Exception("Invalid credentials")
     return parsed
