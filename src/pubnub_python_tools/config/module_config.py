@@ -16,6 +16,8 @@ ROOT_DIR = str(os.path.dirname(os.path.abspath(__file__)).rsplit("/config")[0])
 SUBSCRIBE_KEY = None   # NOTE might be insecure to override
 PUBLISH_KEY = None     # NOTE might be insecure to override
 USER_ID = None         # NOTE might be insecure to override
+CONSOLE_EMAIL = None   # NOTE might be insecure to override
+CONSOLE_PASSWORD = None  # NOTE might be insecure to override
 
 # OVERRIDE LOGGER VARIABLES
 DEFAULT_LOGGER_NAME = "main_log"   # main logger name
@@ -29,3 +31,5 @@ if dotenv is not None:
     SUBSCRIBE_KEY = str(os.getenv('PN_SUBSCRIBE_KEY'))
     PUBLISH_KEY = str(os.getenv('PN_PUBLISH_KEY'))
     USER_ID = str(os.getenv('PN_USER_ID'))
+    CONSOLE_EMAIL = str(os.getenv('PN_CONSOLE_EMAIL'))
+    CONSOLE_PASSWORD = str(os.getenv('PN_CONSOLE_PASSWORD'))

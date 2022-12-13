@@ -5,6 +5,7 @@ from pubnub.exceptions import PubNubException
 from . import pubnub_manager
 from . import pubnub_manager_asyncio
 from . import acl_utils
+from . import pubnub_user 
 from ..cli.v2 import create_parser
 from ..config import module_config
 from ..logger.logging_config import get_logger
@@ -41,13 +42,15 @@ def main(args=None):
     subscribe_key = module_config.SUBSCRIBE_KEY
     publish_key = module_config.PUBLISH_KEY
     user_id = module_config.USER_ID
+    console_email = module_config.CONSOLE_EMAIL
+    console_password = module_config.CONSOLE_PASSWORD
 
     # Display version
     if args.version:
         stdout = f"PubNub Python Tools v{get_version()}"
         print(stdout)
         return stdout
-    
+
     # Override Environment variables from CLI
     if args.subscribe_key is not None:
         subscribe_key = args.subscribe_key
@@ -55,6 +58,10 @@ def main(args=None):
         publish_key = args.publish_key
     if args.uuid is not None:
         user_id = args.uuid
+    if args.console_email is not None:
+        console_email = args.console_email
+    if args.console_password is not None:
+        console_password = args.console_password
 
     # Create PubNub instance
     pnmg = None
@@ -76,6 +83,26 @@ def main(args=None):
     # pnmg._add_on_request_get_callback(oc.ON_REQUEST_URL, oc.ON_REQUEST_PARAMS, oc.ON_REQUEST_BODY)
     # if user_id is not None:
     # pnmg.add_device_uuid(user_id)
+
+    # Create PubNub User
+    pu = pubnub_user.PubNubUser()
+    if args.console_login:
+        try:
+            pu.login(console_email, console_password)
+            pu.load()
+            LOG.info("Logged In.")
+        except Exception as e:
+            print(e)
+            return e
+
+    if args.all_metrics:
+        if pu.isLogin:
+            metrics = pu.all_metrics()
+            print(metrics)
+            LOG.info("Got all metrics.")
+            LOG.debug(metrics)
+        else:
+            print("Please login first.")
 
     # Subscribe
     if args.subscribe:
